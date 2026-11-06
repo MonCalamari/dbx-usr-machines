@@ -16,7 +16,7 @@ a:hover{color:var(--acc)}
 /* Startbild */
 .hero{position:relative;border:1px solid var(--s1);background:#000;padding:0 0 14px}
 .hero canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
-.title{background:var(--acc);margin:0;line-height:0;animation:slide 1s ease-out both}.title canvas{display:block;width:100%;height:auto;image-rendering:pixelated}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.title{background:#e13226;margin:0;line-height:0;animation:slide 1s ease-out both}.title canvas{display:block;width:100%;height:auto;image-rendering:pixelated}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @keyframes slide{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 .sub{text-align:center;letter-spacing:.2em;font-size:13px;margin:10px 0 0}
 .ver{display:flex;justify-content:space-between;padding:0 8px;font-size:13px;color:var(--s3);margin-top:8px}
@@ -32,7 +32,7 @@ nav a:hover{background:var(--acc);border-color:var(--acc);color:#000}
 .mhead h3{margin:0;font-size:24px;letter-spacing:.1em}
 .mhead span{font-size:13px}
 .mbody{padding:16px 14px}
-.lcd{display:block;width:100%;max-width:100%;border:1px solid var(--s2);margin:0 0 16px;background:#d63c2e;image-rendering:pixelated}
+.lcd{display:block;width:100%;max-width:100%;border:1px solid var(--s2);margin:0 0 16px;background:#e13226;image-rendering:pixelated}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{text-align:left;padding:5px 8px;border-bottom:1px dotted var(--s2);vertical-align:top}
 th{color:var(--s3);font-weight:400;letter-spacing:.1em;font-size:12px}
@@ -53,7 +53,7 @@ ul.notes li::marker{color:var(--acc)}
 <main>
 <header class="hero">
   <canvas id="wave" width="320" height="100"></canvas>
-  <h1 class="title"><span class="sr">DBX USR MACHINES</span><canvas id="titlecv" aria-hidden="true"></canvas></h1>
+  <h1 class="title"><span class="sr">DBX USER MACHINES</span><canvas id="titlecv" aria-hidden="true"></canvas></h1>
   <p class="sub">FOR THE ELEKTRON MACHINEDRUM</p>
   <div class="ver"><span id="wname">SAW &gt; PULSE</span><span>MDX X.20 · MDS 1.1</span></div>
 </header>
@@ -239,14 +239,14 @@ document.querySelectorAll('canvas.lcd').forEach(cv=>{
   frame(52,2,80,62);
   // Rendern
   cv.width=W*S;cv.height=H*S;const c=cv.getContext('2d');
-  c.fillStyle='#d63c2e';c.fillRect(0,0,W*S,H*S);
+  c.fillStyle='#e13226';c.fillRect(0,0,W*S,H*S);
   for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(B[y*W+x]){c.fillStyle='#9a2a1f';c.fillRect(x*S,y*S,S,S);c.fillStyle='#3a0a06';c.fillRect(x*S+.5,y*S+.5,S-1,S-1)}
 });
 
 // Titel in der Display-Pixelschrift
 (function(){
-  const t='DBX USR MACHINES',cv=document.getElementById('titlecv'),S=12,w=t.length*4-1+10,h=5+6;
-  cv.width=w*S;cv.height=h*S;const c=cv.getContext('2d');c.fillStyle='#ec281e';c.fillRect(0,0,w*S,h*S);c.fillStyle='#1a0402';
+  const t='DBX USER MACHINES',cv=document.getElementById('titlecv'),S=12,w=t.length*4-1+10,h=5+6;
+  cv.width=w*S;cv.height=h*S;const c=cv.getContext('2d');c.fillStyle='#e13226';c.fillRect(0,0,w*S,h*S);c.fillStyle='#1a0402';
   let x=5;for(const ch of t){const g=F[ch]||F[' '];for(let j=0;j<5;j++)for(let i=0;i<3;i++)if(g[j*3+i]=='1')c.fillRect((x+i)*S+.5,(3+j)*S+.5,S-1,S-1);x+=4}
 })();
 })();
