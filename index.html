@@ -16,10 +16,10 @@ a:hover{color:var(--acc)}
 /* Startbild */
 .hero{position:relative;border:1px solid var(--s1);background:#000;padding:0 0 14px}
 .hero canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
-.title{background:#000;margin:0;line-height:0;animation:glow 1.2s ease-out both}.title canvas{display:block;width:100%;height:auto;image-rendering:pixelated;animation:slide 1.8s ease-out 1s both}
-.lcdbox{position:relative;background:#000;border:1px solid var(--s2);margin:0 0 16px;line-height:0}.lcdbox.on{animation:glow 1.2s ease-out both}
-.lcd{display:block;width:100%;max-width:100%;image-rendering:pixelated;opacity:0;transition:opacity 1.2s ease}.lcdbox.done .lcd{opacity:1}
-.boot{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .9s ease;pointer-events:none}.lcdbox.bootshow .boot{opacity:1}.lcdbox.done .boot{opacity:0;transition:opacity 1.2s ease}
+.title{background:#000;margin:0;line-height:0;animation:glow .8s ease-out both}.title canvas{display:block;width:100%;height:auto;image-rendering:pixelated;animation:slide 1.2s ease-out .6s both}
+.lcdbox{position:relative;cursor:pointer;background:#000;border:1px solid var(--s2);margin:0 0 16px;line-height:0}.lcdbox.on{animation:glow .8s ease-out both}
+.lcd{display:block;width:100%;max-width:100%;image-rendering:pixelated;opacity:0;transition:opacity .8s ease}.lcdbox.done .lcd{opacity:1}
+.boot{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .6s ease;pointer-events:none}.lcdbox.bootshow .boot{opacity:1}.lcdbox.done .boot{opacity:0;transition:opacity .8s ease}
 @media(prefers-reduced-motion:reduce){.title,.lcdbox{animation:none;background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}.title canvas{animation:none;clip-path:none}.lcd{opacity:1;transition:none}.boot{display:none}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @keyframes glow{from{background:#000;box-shadow:0 0 0 rgba(225,50,38,0)}to{background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}}
@@ -292,19 +292,29 @@ function fly(sc){const m=mk(),w=11*sc,h=5*sc,x=Math.round((BW-w)/2),y=Math.round
     for(let j=Y0;j<Y1;j++)for(let i=X0;i<X1;i++){const inner=i>=X0+t&&i<X1-t&&j>=Y0+t&&j<Y1-t;if(!inner){const edge=i==X0||i==X1-1||j==Y0||j==Y1-1;if(edge||((i+j)&1)==0)m.px(i,j)}}
     line(m,3,3,X0,Y0);line(m,BW-4,3,X1-1,Y0);line(m,3,BH-4,X0,Y1-1);line(m,BW-4,BH-4,X1-1,Y1-1)}
   m.text('DBX',x,y,sc);return m.B}
-const FLY=[[1,170],[2,150],[3,130],[4,115],[5,105],[6,100],[7,100],[9,650]];   // [Maßstab, Anzeigedauer ms]
+const FLY=[[1,120],[2,105],[3,90],[4,80],[5,75],[6,70],[7,70],[9,420]];   // [Maßstab, Anzeigedauer ms]
 function blit(cv,B){cv.width=BW*BS;cv.height=BH*BS;const c=cv.getContext('2d');
   for(let y=0;y<BH;y++)for(let x=0;x<BW;x++)if(B[y*BW+x]){c.fillStyle='#9a2a1f';c.fillRect(x*BS,y*BS,BS,BS);c.fillStyle='#3a0a06';c.fillRect(x*BS+.5,y*BS+.5,BS-1,BS-1)}}
 const TEXT=textScreen(),FLYB=FLY.map(([sc])=>fly(sc));
 window._lcdBoot={TEXT,FLYB,blit,BW,BH,BS};
+function bootRun(box,first){
+  const boot=box.querySelector('canvas.boot')||box.appendChild(Object.assign(document.createElement('canvas'),{className:'boot'}));
+  (box._tm||[]).forEach(clearTimeout);box._tm=[];box._st='run';
+  box.classList.remove('done','bootshow');
+  const t=(ms,f)=>box._tm.push(setTimeout(f,ms));
+  let at=first?900:150;                                                    // Rot ist an (beim ersten Mal erst Glühen)
+  t(at,()=>{blit(boot,TEXT);box.classList.add('bootshow')});               // Textbild blendet ein
+  at+=600+1500;                                                            // Einblenden + Halten
+  FLY.forEach(([sc,d],i)=>{t(at,()=>blit(boot,FLYB[i]));at+=d});          // Logo fliegt nach vorne
+  t(at,()=>{box.classList.add('done');box._st='done'});                    // dann die Machine mit den Standardwerten
+}
 window._lcdStart=function(box){
   if(RM){box.classList.add('done');return}
-  const boot=document.createElement('canvas');boot.className='boot';box.appendChild(boot);
-  const t=(ms,f)=>setTimeout(f,ms);
-  t(1300,()=>{blit(boot,TEXT);box.classList.add('bootshow')});            // Rot ist an, das Textbild blendet langsam ein
-  let at=1300+900+2800;                                                    // Einblenden + Halten
-  FLY.forEach(([sc,d],i)=>{t(at,()=>blit(boot,FLYB[i]));at+=d});          // Logo fliegt nach vorne
-  t(at,()=>box.classList.add('done'));                                     // danach die Machine mit den Standardwerten
+  bootRun(box,true);
+  box.addEventListener('click',()=>{                                       // Klick/Tippen: überspringen, danach erneut abspielen
+    if(box._st=='run'){(box._tm||[]).forEach(clearTimeout);box.classList.add('done');box._st='done'}
+    else if(box._st=='done')bootRun(box,false);
+  });
 };
 })();
 // Hintergrundbeleuchtung geht an, dann baut sich das Display auf – sobald der Bereich sichtbar ist
