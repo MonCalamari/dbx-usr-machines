@@ -43,7 +43,7 @@ td:nth-child(2){white-space:nowrap;color:var(--s3)}
 audio{width:100%;filter:invert(.9) hue-rotate(180deg)}
 ul.notes{padding-left:18px;margin:6px 0}
 ul.notes li::marker{color:var(--acc)}
-.small{font-size:13px;color:var(--s3)}
+.heads{border:1px solid var(--s2);border-left:6px solid #e13226;padding:12px 16px;margin:0 0 24px;max-width:860px}.heads h2{margin:0 0 8px}.heads p{margin:0}.small{font-size:13px;color:var(--s3)}
 .dl a{display:inline-block;border:1px solid var(--acc);padding:3px 12px;margin:0 6px 6px 0;text-decoration:none}
 .dl a:hover{background:var(--acc);color:#000}
 .bar{height:4px;background:var(--ink);margin:0 8px;border-top:0}
@@ -53,7 +53,7 @@ ul.notes li::marker{color:var(--acc)}
 <main>
 <header class="hero">
   <canvas id="wave" width="320" height="100"></canvas>
-  <h1 class="title"><span class="sr">DBX USER MACHINES</span><canvas id="titlecv" aria-hidden="true"></canvas></h1>
+  <h1 class="title"><span class="sr">DBX USR MACHINES</span><canvas id="titlecv" aria-hidden="true"></canvas></h1>
   <p class="sub">FOR THE ELEKTRON MACHINEDRUM</p>
   <div class="ver"><span id="wname">SAW &gt; PULSE</span><span>MDX X.20 · MDS 1.1</span></div>
 </header>
@@ -70,6 +70,14 @@ rebuilt in principle, not copied. Made for EBM, industrial and dark techno: raw,
 </section>
 
 <hr class="dots">
+<section class="heads" id="heads">
+<h2>Heads-up: resonance and volume</h2>
+<p>Both machines are built around resonance: DBX-K2 strikes a tuned resonator, DBX-DR runs a resonant ladder filter and a feedback
+loop that can oscillate on its own. As far as I have tested, they do not run away or overshoot – but like any resonator synth they can get
+<b>very loud</b>. Mind your speakers, your ears and the track level, and bring the knobs up gradually. I tested on one MKII +Drive UW and
+have not tried every combination of all eight knobs, so start low and take care.</p>
+</section>
+
 <div class="machines">
 <section class="machine" id="dbx-k2" data-machine="kick2" data-version="0.9" data-mk1="2850" data-mk2="2508">
   <div class="mhead"><h3>DBX-K2</h3><span>Resonator kick · v0.9 · MKII 2,508 / MKI 2,850 cycles</span></div>
@@ -97,6 +105,7 @@ rebuilt in principle, not copied. Made for EBM, industrial and dark techno: raw,
       <li>A little HOLD with a short DCAY: fat, boxy kick that cuts off cleanly. Add DRIV for brutal.</li>
       <li>High BEND with short BTIM: zappy electro kicks.</li>
       <li>Low PTCH, BEND 0, long DCAY: deep booming sub.</li>
+      <li>It is a resonator: with long DCAY, high PULS and DRIV it hits hard and can get very loud – mind your system.</li>
     </ul>
     <p class="dl"><a href="https://github.com/MonCalamari/DBX-K2">GitHub</a><a href="https://github.com/MonCalamari/DBX-K2/releases/latest">Latest release (.syx / .mds)</a></p>
   </div>
@@ -245,7 +254,7 @@ document.querySelectorAll('canvas.lcd').forEach(cv=>{
 
 // Titel in der Display-Pixelschrift
 (function(){
-  const t='DBX USER MACHINES',cv=document.getElementById('titlecv'),S=12,w=t.length*4-1+10,h=5+6;
+  const t='DBX USR MACHINES',cv=document.getElementById('titlecv'),S=12,w=t.length*4-1+10,h=5+6;
   cv.width=w*S;cv.height=h*S;const c=cv.getContext('2d');c.fillStyle='#e13226';c.fillRect(0,0,w*S,h*S);c.fillStyle='#1a0402';
   let x=5;for(const ch of t){const g=F[ch]||F[' '];for(let j=0;j<5;j++)for(let i=0;i<3;i++)if(g[j*3+i]=='1')c.fillRect((x+i)*S+.5,(3+j)*S+.5,S-1,S-1);x+=4}
 })();
