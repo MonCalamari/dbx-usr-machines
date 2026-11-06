@@ -327,7 +327,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   const draw=()=>{const c=ovl.getContext('2d');c.clearRect(0,0,ovl.width,ovl.height);
     const px=(x,y)=>{c.fillStyle='#9a2a1f';c.fillRect(x*BS,y*BS,BS,BS);c.fillStyle='#3a0a06';c.fillRect(x*BS+.5,y*BS+.5,BS-1,BS-1)};
     const h=Math.round(38*box._lev);for(let i=0;i<4;i++)for(let j=0;j<h;j++)px(43+i,53-j);          // LEV-Füllung von unten
-    if(box._play&&box._blink)for(let j=0;j<7;j++)for(let i=0;i<4-Math.abs(j-3);i++)px(26+i,50+j)};   // Play-Dreieck
+    if(box._play&&box._blink)[2,4,6,4,2].forEach((w,j)=>{for(let i=0;i<w;i++)px(25+i,51+j)})};   // Play-Dreieck
   let iv=0;
   const stop=()=>{box._play=false;clearInterval(iv);draw()};
   au.addEventListener('play',()=>{
