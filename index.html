@@ -16,7 +16,12 @@ a:hover{color:var(--acc)}
 /* Startbild */
 .hero{position:relative;border:1px solid var(--s1);background:#000;padding:0 0 14px}
 .hero canvas{display:block;width:100%;height:auto;image-rendering:pixelated}
-.title{background:#e13226;margin:0;line-height:0;animation:slide 1.5s ease-out both}.title canvas{display:block;width:100%;height:auto;image-rendering:pixelated}.lcd{clip-path:inset(0 100% 0 0)}.lcd.in{animation:slide 2.2s ease-out both}@media(prefers-reduced-motion:reduce){.title{animation:none}.lcd{clip-path:none}.lcd.in{animation:none}}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.title{background:#000;margin:0;line-height:0;animation:glow 1.2s ease-out both}.title canvas{display:block;width:100%;height:auto;image-rendering:pixelated;animation:slide 1.8s ease-out 1s both}
+.lcdbox{background:#000;border:1px solid var(--s2);margin:0 0 16px;line-height:0}.lcdbox.on{animation:glow 1.2s ease-out both}
+.lcd{display:block;width:100%;max-width:100%;image-rendering:pixelated;clip-path:inset(0 100% 0 0)}.lcdbox.on .lcd{animation:slide 2.4s ease-out 1s both}
+@media(prefers-reduced-motion:reduce){.title,.lcdbox{animation:none;background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}.title canvas,.lcd{animation:none;clip-path:none}.lcdbox.on,.lcdbox.on .lcd{animation:none}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@keyframes glow{from{background:#000;box-shadow:0 0 0 rgba(225,50,38,0)}to{background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}}
 @keyframes slide{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 .sub{text-align:center;letter-spacing:.2em;font-size:13px;margin:10px 0 0}
 .ver{display:flex;justify-content:space-between;padding:0 8px;font-size:13px;color:var(--s3);margin-top:8px}
@@ -32,7 +37,6 @@ nav a:hover{background:var(--acc);border-color:var(--acc);color:#000}
 .mhead h3{margin:0;font-size:24px;letter-spacing:.1em}
 .mhead span{font-size:13px}
 .mbody{padding:16px 14px}
-.lcd{display:block;width:100%;max-width:100%;border:1px solid var(--s2);margin:0 0 16px;background:#e13226;image-rendering:pixelated}
 table{border-collapse:collapse;width:100%;font-size:14px}
 th,td{text-align:left;padding:5px 8px;border-bottom:1px dotted var(--s2);vertical-align:top}
 th{color:var(--s3);font-weight:400;letter-spacing:.1em;font-size:12px}
@@ -48,7 +52,7 @@ ul.notes li::marker{color:var(--acc)}
 .dl a:hover{background:var(--acc);color:#000}
 .bar{height:4px;background:var(--ink);margin:0 8px;border-top:0}
 </style>
-<noscript><style>.lcd{clip-path:none}</style></noscript>
+<noscript><style>.lcd{clip-path:none}.lcdbox,.title{background:#e13226}</style></noscript>
 </head>
 <body>
 <main>
@@ -75,7 +79,7 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <section class="machine" id="dbx-k2" data-machine="kick2" data-version="0.9" data-mk1="2850" data-mk2="2508">
   <div class="mhead"><h3>DBX-K2</h3><span>Resonator kick · v0.9 · MKII 2,508 / MKI 2,850 cycles</span></div>
   <div class="mbody">
-    <canvas class="lcd" data-m="k2" role="img" aria-label="DBX-K2 display on the Machinedrum, default settings"></canvas>
+    <div class="lcdbox"><canvas class="lcd" data-m="k2" role="img" aria-label="DBX-K2 display on the Machinedrum, default settings"></canvas></div>
     <p>A resonator kick in the spirit of the Korg Volca Kick. Each trigger strikes a <b>tuned resonator</b> whose <b>pitch
     sweeps down</b> from a higher start, then rings out like a drum skin – or, with <b>HOLD</b>, stays at full level and cuts
     off. A short click adds the attack, saturation and a lowpass shape the result. The first transient is
@@ -108,7 +112,7 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <section class="machine" id="dbx-dr" data-machine="drone" data-version="0.5" data-mk1="3017" data-mk2="2610">
   <div class="mhead"><h3>DBX-DR</h3><span>Dark drone · v0.5 · MKII 2,610 / MKI 3,017 cycles</span></div>
   <div class="mbody">
-    <canvas class="lcd" data-m="dr" role="img" aria-label="DBX-DR display on the Machinedrum, default settings"></canvas>
+    <div class="lcdbox"><canvas class="lcd" data-m="dr" role="img" aria-label="DBX-DR display on the Machinedrum, default settings"></canvas></div>
     <p>A single-voice drone. Three <b>detuned, deliberately unsmoothed saws</b> and a square sub run through a saturation
     stage into a 4-pole <b>ladder lowpass</b>. The heart is a <b>feedback loop in front of the filter</b>: the saturated
     signal runs through a short delay and back, phase-inverted, with gain up to 1.5. Above 1 it starts to <b>oscillate
@@ -247,23 +251,23 @@ document.querySelectorAll('canvas.lcd').forEach(cv=>{
   frame(52,2,80,62);
   // Rendern
   cv.width=W*S;cv.height=H*S;const c=cv.getContext('2d');
-  c.fillStyle='#e13226';c.fillRect(0,0,W*S,H*S);
+  
   for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(B[y*W+x]){c.fillStyle='#9a2a1f';c.fillRect(x*S,y*S,S,S);c.fillStyle='#3a0a06';c.fillRect(x*S+.5,y*S+.5,S-1,S-1)}
 });
 
 // Titel in der Display-Pixelschrift
 (function(){
   const t='DBX USR MACHINES',cv=document.getElementById('titlecv'),S=12,w=t.length*4-1+10,h=5+6;
-  cv.width=w*S;cv.height=h*S;const c=cv.getContext('2d');c.fillStyle='#e13226';c.fillRect(0,0,w*S,h*S);c.fillStyle='#1a0402';
+  cv.width=w*S;cv.height=h*S;const c=cv.getContext('2d');c.fillStyle='#1a0402';
   let x=5;for(const ch of t){const g=F[ch]||F[' '];for(let j=0;j<5;j++)for(let i=0;i<3;i++)if(g[j*3+i]=='1')c.fillRect((x+i)*S+.5,(3+j)*S+.5,S-1,S-1);x+=4}
 })();
 })();
-// Display-Einlauf (links nach rechts), sobald der Bereich sichtbar ist
+// Hintergrundbeleuchtung geht an, dann baut sich das Display auf – sobald der Bereich sichtbar ist
 (function(){
-  const els=[...document.querySelectorAll('canvas.lcd')];
-  if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return}
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target._lcd.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -15% 0px'});
-  els.forEach(e=>{const w=e.parentElement;w._lcd=e;io.observe(w)});
+  const els=[...document.querySelectorAll('.lcdbox')];
+  if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('on'));return}
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{rootMargin:'0px 0px -15% 0px'});
+  els.forEach(e=>io.observe(e));
 })();
 </script>
 </body>
