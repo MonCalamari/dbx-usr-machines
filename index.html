@@ -19,8 +19,9 @@ a:hover{color:var(--acc)}
 .title{background:#000;margin:0;line-height:0;animation:glow .8s ease-out both}.title canvas{display:block;width:100%;height:auto;image-rendering:pixelated;animation:slide 1.2s ease-out .6s both}
 .lcdbox{position:relative;cursor:pointer;background:#000;border:1px solid var(--s2);margin:0 0 16px;line-height:0}.lcdbox.on{animation:glow .8s ease-out both}
 .lcd{display:block;width:100%;max-width:100%;image-rendering:pixelated;opacity:0;transition:opacity .8s ease}.lcdbox.done .lcd{opacity:1}
+.ovl{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .8s ease;pointer-events:none}.lcdbox.done .ovl{opacity:1}
 .boot{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .6s ease;pointer-events:none}.lcdbox.bootshow .boot{opacity:1}.lcdbox.done .boot{opacity:0;transition:opacity .8s ease}
-@media(prefers-reduced-motion:reduce){.title,.lcdbox{animation:none;background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}.title canvas{animation:none;clip-path:none}.lcd{opacity:1;transition:none}.boot{display:none}}
+@media(prefers-reduced-motion:reduce){.title,.lcdbox{animation:none;background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}.title canvas{animation:none;clip-path:none}.lcd,.ovl{opacity:1;transition:none}.boot{display:none}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @keyframes glow{from{background:#000;box-shadow:0 0 0 rgba(225,50,38,0)}to{background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}}
 @keyframes slide{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
@@ -53,7 +54,7 @@ ul.notes li::marker{color:var(--acc)}
 .dl a:hover{background:var(--acc);color:#000}
 .bar{height:4px;background:var(--ink);margin:0 8px;border-top:0}
 </style>
-<noscript><style>.lcd{opacity:1}.lcdbox,.title{background:#e13226}</style></noscript>
+<noscript><style>.lcd,.ovl{opacity:1}.lcdbox,.title{background:#e13226}</style></noscript>
 </head>
 <body>
 <main>
@@ -236,7 +237,7 @@ document.querySelectorAll('canvas.lcd').forEach(cv=>{
   text('>A01',3,51);
   rect(2,57,50,7);text(d.path,2+Math.floor((50-tw(d.path))/2),58,1);
   // LEV
-  text('LEV',40,4);rect(43,16,4,38);for(let y=14;y<56;y+=3){px(40,y);px(49,y)}
+  text('LEV',40,4);frame(42,15,6,40);for(let y=14;y<56;y+=3){px(40,y);px(49,y)}
   // 8 Knoepfe, 4 x 2, je 20 x 31
   d.p.forEach(([n,v],i)=>{
     const x0=52+(i%4)*20,y0=2+Math.floor(i/4)*31;
@@ -316,6 +317,27 @@ window._lcdStart=function(box){
     else if(box._st=='done')bootRun(box,false);
   });
 };
+
+// ---- Player-Kopplung: Play-Dreieck blinkt beim Abspielen, LEV-Balken folgt der Lautstärke (je Machine) ----
+document.querySelectorAll('.lcdbox').forEach(box=>{
+  const au=box.closest('.machine').querySelector('audio');if(!au)return;
+  const ovl=box.appendChild(Object.assign(document.createElement('canvas'),{className:'ovl'}));
+  ovl.width=BW*BS;ovl.height=BH*BS;
+  box._lev=au.muted?0:au.volume;box._play=false;box._blink=false;
+  const draw=()=>{const c=ovl.getContext('2d');c.clearRect(0,0,ovl.width,ovl.height);
+    const px=(x,y)=>{c.fillStyle='#9a2a1f';c.fillRect(x*BS,y*BS,BS,BS);c.fillStyle='#3a0a06';c.fillRect(x*BS+.5,y*BS+.5,BS-1,BS-1)};
+    const h=Math.round(38*box._lev);for(let i=0;i<4;i++)for(let j=0;j<h;j++)px(43+i,53-j);          // LEV-Füllung von unten
+    if(box._play&&box._blink)for(let j=0;j<7;j++)for(let i=0;i<4-Math.abs(j-3);i++)px(26+i,50+j)};   // Play-Dreieck
+  let iv=0;
+  const stop=()=>{box._play=false;clearInterval(iv);draw()};
+  au.addEventListener('play',()=>{
+    document.querySelectorAll('audio').forEach(o=>{if(o!==au)o.pause()});                          // immer nur eine Machine vorhören
+    if(box._st=='run'){(box._tm||[]).forEach(clearTimeout);box.classList.add('done');box._st='done'}
+    box._play=true;box._blink=true;draw();clearInterval(iv);iv=setInterval(()=>{box._blink=!box._blink;draw()},450)});
+  au.addEventListener('pause',stop);au.addEventListener('ended',stop);
+  au.addEventListener('volumechange',()=>{box._lev=au.muted?0:au.volume;draw()});
+  draw();
+});
 })();
 // Hintergrundbeleuchtung geht an, dann baut sich das Display auf – sobald der Bereich sichtbar ist
 (function(){
