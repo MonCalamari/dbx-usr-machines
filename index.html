@@ -245,7 +245,7 @@ document.querySelectorAll('canvas.lcd').forEach(cv=>{
     if(i%4)dotV(x0,y0+12,18);
     const cx=x0+10,cy=y0+21,r=6;
     for(let a=0;a<360;a+=3){px(Math.round(cx+Math.cos(a*Math.PI/180)*r),Math.round(cy+Math.sin(a*Math.PI/180)*r))}
-    const ang=(-225+270*v/127)*Math.PI/180; // 0 = links unten, 127 = rechts unten
+    const ang=(225-270*v/127)*Math.PI/180; // 0 = links unten, 64 = oben, 127 = rechts unten (im Uhrzeigersinn)
     const ix=Math.round(cx+Math.cos(ang)*3.5),iy=Math.round(cy-Math.sin(ang)*3.5);
     px(ix,iy);px(ix+1,iy);px(ix,iy+1);px(ix+1,iy+1);
   });
