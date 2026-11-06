@@ -27,7 +27,7 @@ h2::after{content:"";flex:1;border-top:2px dotted var(--s2)}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
 nav a{border:1px solid var(--s2);padding:4px 14px;text-decoration:none;font-size:14px}
 nav a:hover{background:var(--acc);border-color:var(--acc);color:#000}
-.machines{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}@media(min-width:1000px){.machines{grid-template-columns:1fr 1fr;grid-template-rows:repeat(8,auto);column-gap:24px;row-gap:0}.machine{display:grid;grid-row:span 8;grid-template-rows:subgrid}.mbody{display:grid;grid-row:span 7;grid-template-rows:subgrid;align-content:start}.mbody>*{align-self:start}}.machine{border:1px solid var(--s2);margin:0;min-width:0}#about p,#install p,#notes p,#license p{max-width:860px}.mhead{flex-wrap:wrap;row-gap:2px}
+.machines{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}@media(min-width:1000px){.machines{grid-template-columns:1fr 1fr;grid-template-rows:repeat(9,auto);column-gap:24px;row-gap:0}.machine{display:grid;grid-row:span 9;grid-template-rows:subgrid}.mbody{display:grid;grid-row:span 8;grid-template-rows:subgrid;align-content:start}.mbody>*{align-self:start}}.machine{border:1px solid var(--s2);margin:0;min-width:0}#about p,#install p,#notes p,#license p{max-width:860px}.mhead{flex-wrap:wrap;row-gap:2px}
 .mhead{display:flex;align-items:center;gap:16px;background:#a4a9ac;color:#000;padding:8px 14px}
 .mhead h3{margin:0;font-size:24px;letter-spacing:.1em}
 .mhead span{font-size:13px}
@@ -43,7 +43,7 @@ td:nth-child(2){white-space:nowrap;color:var(--s3)}
 audio{width:100%;filter:invert(.9) hue-rotate(180deg)}
 ul.notes{padding-left:18px;margin:6px 0}
 ul.notes li::marker{color:var(--acc)}
-.heads{border:1px solid var(--s2);border-left:6px solid #e13226;padding:12px 16px;margin:0 0 24px;max-width:860px}.heads h2{margin:0 0 8px}.heads p{margin:0}.small{font-size:13px;color:var(--s3)}
+.heads{border-left:6px solid #e13226;background:#0d0d0d;padding:10px 14px;margin:0 0 16px;font-size:14px}.heads b.h{display:block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}.small{font-size:13px;color:var(--s3)}
 .dl a{display:inline-block;border:1px solid var(--acc);padding:3px 12px;margin:0 6px 6px 0;text-decoration:none}
 .dl a:hover{background:var(--acc);color:#000}
 .bar{height:4px;background:var(--ink);margin:0 8px;border-top:0}
@@ -70,14 +70,6 @@ rebuilt in principle, not copied. Made for EBM, industrial and dark techno: raw,
 </section>
 
 <hr class="dots">
-<section class="heads" id="heads">
-<h2>Heads-up: resonance and volume</h2>
-<p>Both machines are built around resonance: DBX-K2 strikes a tuned resonator, DBX-DR runs a resonant ladder filter and a feedback
-loop that can oscillate on its own. As far as I have tested, they do not run away or overshoot – but like any resonator synth they can get
-<b>very loud</b>. Mind your speakers, your ears and the track level, and bring the knobs up gradually. I tested on one MKII +Drive UW and
-have not tried every combination of all eight knobs, so start low and take care.</p>
-</section>
-
 <div class="machines">
 <section class="machine" id="dbx-k2" data-machine="kick2" data-version="0.9" data-mk1="2850" data-mk2="2508">
   <div class="mhead"><h3>DBX-K2</h3><span>Resonator kick · v0.9 · MKII 2,508 / MKI 2,850 cycles</span></div>
@@ -87,6 +79,8 @@ have not tried every combination of all eight knobs, so start low and take care.
     sweeps down from a higher start, then rings out like a drum skin – or, with HOLD, stays at full level and cuts
     off. A short click adds the attack, saturation and a lowpass shape the result. The first transient is
     deliberately hard: the resonator starts at full swing.</p>
+
+    <p class="heads"><b class="h">Heads-up: resonance &amp; volume</b>DBX-K2 is a resonator machine: every hit rings a tuned resonator. As far as I have tested, it does not run away or overshoot – but like any resonator synth it can get <b>very loud</b>. Mind your speakers, your ears and the track level, and bring the knobs up gradually. Tested on one MKII +Drive UW; I have not tried every combination of all eight knobs.</p>
     <div class="audio"><label>Example recording (mono, faded in and out)</label>
     <audio controls preload="none" src="media/dbx-k2-example.mp3"></audio></div>
     <table>
@@ -105,7 +99,6 @@ have not tried every combination of all eight knobs, so start low and take care.
       <li>A little HOLD with a short DCAY: fat, boxy kick that cuts off cleanly. Add DRIV for brutal.</li>
       <li>High BEND with short BTIM: zappy electro kicks.</li>
       <li>Low PTCH, BEND 0, long DCAY: deep booming sub.</li>
-      <li>It is a resonator: with long DCAY, high PULS and DRIV it hits hard and can get very loud – mind your system.</li>
     </ul>
     <p class="dl"><a href="https://github.com/MonCalamari/DBX-K2">GitHub</a><a href="https://github.com/MonCalamari/DBX-K2/releases/latest">Latest release (.syx / .mds)</a></p>
   </div>
@@ -120,6 +113,8 @@ have not tried every combination of all eight knobs, so start low and take care.
     signal runs through a short delay and back, phase-inverted, with gain up to 1.5. Above 1 it starts to oscillate
     on its own and fights the drone – from slow growl to metallic whistle. <b>WARP</b> lets two oscillators and the
     loop's delay wander slowly and irregularly, so it keeps changing without any periodic wobble.</p>
+
+    <p class="heads"><b class="h">Heads-up: resonance &amp; volume</b>DBX-DR is built on resonance: a resonant ladder filter plus a feedback loop that can oscillate on its own. As far as I have tested, it does not run away or overshoot – but like any resonator synth it can get <b>very loud</b>. Mind your speakers, your ears and the track level, and bring the knobs up gradually. Tested on one MKII +Drive UW; I have not tried every combination of all eight knobs.</p>
     <div class="audio"><label>Example recording (mono, faded in and out)</label>
     <audio controls preload="none" src="media/dbx-dr-example.mp3"></audio></div>
     <table>
