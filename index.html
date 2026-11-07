@@ -398,6 +398,15 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   els.forEach(e=>io.observe(e));
 })();
 
+// Fotostreifen: bei jedem Besuch eine andere Reihenfolge (muss vor der Galerie laufen, die die Reihenfolge übernimmt)
+(function(){
+  const st=document.querySelector('.strip');if(!st)return;
+  const PIN=['signal-kommt','studio'];                                      // diese zwei stehen immer vorn, damit sie sichtbar sind
+  const all=[...st.children],name=e=>e.getAttribute('href').split('/').pop().replace('.jpg','');
+  const pinned=PIN.map(p=>all.find(e=>name(e)==p)).filter(Boolean),a=all.filter(e=>!pinned.includes(e));
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+  pinned.concat(a).forEach(e=>st.appendChild(e));
+})();
 // Fotogalerie: Klick vergrößert, Pfeile/Wischen blättern, Esc schließt
 (function(){
   const links=[...document.querySelectorAll('.strip a')];if(!links.length)return;
