@@ -64,9 +64,9 @@ ul.notes li::marker{color:var(--acc)}
 .photos .small{margin:8px 0 0}.photos .small:last-of-type{margin-bottom:32px}
 .lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;flex-direction:column;padding:16px;line-height:1.4}
 .lb.open{display:flex}
-.lb img{max-width:min(96vw,1500px);max-height:76vh;object-fit:contain;border:1px solid var(--s2);cursor:pointer}
-.lb .cap{max-width:860px;margin:10px 0 0;font-size:13px;color:var(--s3);text-align:center;min-height:1.4em}
-.lb .bar{display:flex;gap:10px;align-items:center;margin-top:12px;font-size:13px;color:var(--s3)}
+.lb img{max-width:min(96vw,1500px);max-height:calc(100vh - 170px);max-height:calc(100dvh - 170px);object-fit:contain;border:1px solid var(--s2);cursor:pointer}
+.lb .cap{max-width:860px;margin:12px 0 0;font-size:13px;color:var(--s3);text-align:center;min-height:1.4em}
+.lb .lbnav{display:flex;gap:10px;align-items:center;margin-top:14px;font-size:13px;color:var(--s3)}
 .lb button{background:#000;color:var(--ink);border:1px solid var(--s2);padding:6px 16px;font:inherit;cursor:pointer}
 .lb button:hover,.lb button:focus-visible{border-color:#e13226;color:#e13226;outline:none}
 .small{font-size:13px;color:var(--s3)}
@@ -101,9 +101,9 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <h2>Field notes</h2>
 <div class="strip">
 <a href="media/photos/signal-kommt.jpg" target="_blank" rel="noopener"><img src="media/photos/signal-kommt-t.jpg" width="274" height="420" alt="Red glowing sign reading &quot;Signal kommt&quot; behind condensation" loading="lazy"></a>
-<a href="media/photos/studio.jpg" target="_blank" rel="noopener"><img src="media/photos/studio-t.jpg" width="427" height="420" alt="My studio at night: Elektron machines, an Access Virus and an Analog synth, lit by their own LEDs" loading="lazy"></a>
-<a href="media/photos/horn-system.jpg" target="_blank" rel="noopener"><img src="media/photos/horn-system-t.jpg" width="431" height="420" alt="My own horn system on a wooden stage in the woods at night: four cabinets with horns on top" loading="lazy"></a>
-<a href="media/photos/subs-club.jpg" target="_blank" rel="noopener"><img src="media/photos/subs-club-t.jpg" width="426" height="420" alt="Two large bass cabinets in an empty club room covered in graffiti" loading="lazy"></a>
+<a href="media/photos/studio.jpg" target="_blank" rel="noopener"><img src="media/photos/studio-t.jpg" width="427" height="420" alt="My studio at night: Elektron machines, an Access Virus and a DATAQ Vibe mixer, lit by their own LEDs" loading="lazy"></a>
+<a href="media/photos/horn-system.jpg" target="_blank" rel="noopener"><img src="media/photos/horn-system-t.jpg" width="431" height="420" alt="My own horn system on a wooden stage in the woods at night: Limmer 308 (self-made), 12&quot; kick horn (self-made), Martin Audio WSX" loading="lazy"></a>
+<a href="media/photos/subs-club.jpg" target="_blank" rel="noopener"><img src="media/photos/subs-club-t.jpg" width="426" height="420" alt="Two Limmer 215 bass cabinets in an empty club room covered in graffiti. The club no longer exists." loading="lazy"></a>
 <a href="media/photos/red-wall-triangles.jpg" target="_blank" rel="noopener"><img src="media/photos/red-wall-triangles-t.jpg" width="806" height="420" alt="Three white paper triangles hanging in front of a decayed red wall" loading="lazy"></a>
 <a href="media/photos/corridor.jpg" target="_blank" rel="noopener"><img src="media/photos/corridor-t.jpg" width="313" height="420" alt="A narrow empty corridor with ceiling lamps, fading into darkness" loading="lazy"></a>
 <a href="media/photos/bucket.jpg" target="_blank" rel="noopener"><img src="media/photos/bucket-t.jpg" width="623" height="420" alt="A rusty bucket filled with black liquid next to a concrete pipe" loading="lazy"></a>
@@ -408,7 +408,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
 (function(){
   const links=[...document.querySelectorAll('.strip a')];if(!links.length)return;
   const lb=document.createElement('div');lb.className='lb';lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','Photo viewer');
-  lb.innerHTML='<img alt=""><p class="cap"></p><div class="bar"><button type="button" data-a="prev" aria-label="Previous photo">&#9664;</button><span class="cnt"></span><button type="button" data-a="next" aria-label="Next photo">&#9654;</button><button type="button" data-a="close" aria-label="Close">&#10005; ESC</button></div>';
+  lb.innerHTML='<img alt=""><p class="cap"></p><div class="lbnav"><button type="button" data-a="prev" aria-label="Previous photo">&#9664;</button><span class="cnt"></span><button type="button" data-a="next" aria-label="Next photo">&#9654;</button><button type="button" data-a="close" aria-label="Close">&#10005; ESC</button></div>';
   document.body.appendChild(lb);
   const img=lb.querySelector('img'),cap=lb.querySelector('.cap'),cnt=lb.querySelector('.cnt'),n=links.length;
   let i=0,last=null;
