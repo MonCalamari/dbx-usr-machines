@@ -43,7 +43,7 @@ h2::after{content:"";flex:1;border-top:2px dotted var(--s2)}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
 nav a{border:1px solid var(--s2);padding:4px 14px;text-decoration:none;font-size:14px}
 nav a:hover{background:var(--acc);border-color:var(--acc);color:#000}
-.machines{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}@media(min-width:1000px){.machines{grid-template-columns:1fr 1fr;grid-template-rows:repeat(9,auto);column-gap:24px;row-gap:0}.machine{display:grid;grid-row:span 9;grid-template-rows:subgrid}.mbody{display:grid;grid-row:span 8;grid-template-rows:subgrid;align-content:start}.mbody>*{align-self:start}}.machine{border:1px solid var(--s2);margin:0;min-width:0}#about p,#install p,#notes p,#license p{max-width:860px}.mhead{flex-wrap:wrap;row-gap:2px}
+.machines{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}@media(min-width:1000px){.machines{grid-template-columns:1fr 1fr;grid-template-rows:repeat(10,auto);column-gap:24px;row-gap:0}.machine{display:grid;grid-row:span 10;grid-template-rows:subgrid}.mbody{display:grid;grid-row:span 9;grid-template-rows:subgrid;align-content:start}.mbody>*{align-self:start}}.machine{border:1px solid var(--s2);margin:0;min-width:0}#about p,#install p,#notes p,#license p{max-width:860px}.mhead{flex-wrap:wrap;row-gap:2px}
 .mhead{display:flex;align-items:center;gap:16px;background:#a4a9ac;color:#000;padding:8px 14px}
 .mhead h3{margin:0;font-size:24px;letter-spacing:.1em}
 .mhead span{font-size:13px}
@@ -71,6 +71,7 @@ ul.notes li::marker{color:var(--acc)}
 @keyframes hint2{0%,100%{filter:brightness(.97);box-shadow:0 0 0 1px rgba(225,50,38,.15),0 0 0 0 rgba(225,50,38,0)}50%{filter:brightness(1.06);box-shadow:0 0 0 1px rgba(225,50,38,.4),0 0 6px 0 rgba(225,50,38,.25)}}
 .lfo{animation:hint 2.4s ease-in-out infinite}.lfo.used{animation:hint2 3.4s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.lfo{animation:none;box-shadow:0 0 0 2px #e13226,0 0 12px 2px rgba(225,50,38,.5)}.lfo.used{box-shadow:0 0 0 1px rgba(225,50,38,.3)}}
+.dl.printrow{margin-bottom:0}
 .dl .printbtn{display:inline-block;background:none;color:var(--ink);font:inherit;border:1px solid var(--acc);padding:3px 12px;margin:0 6px 6px 0;cursor:pointer}.dl .printbtn:hover,.dl .printbtn:focus-visible{background:var(--acc);color:#000;outline:none}
 @media print{
   :root{--ink:#000;--s1:#ccc;--s2:#999;--s3:#444;--acc:#000}
@@ -78,7 +79,7 @@ ul.notes li::marker{color:var(--acc)}
   body{background:#fff;color:#000;font-size:11pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   a{color:#000;text-decoration:none}
   main{max-width:none;padding:0}
-  .lb,.boot,.ovl,.audio,.printbtn,.title,nav,.hero{display:none!important}
+  .lb,.boot,.ovl,.audio,.printbtn,.printrow,.title,nav,.hero{display:none!important}
   body.printing main>*{display:none!important}
   body.printing main>.machines{display:block!important}
   body.printing .machines>.machine{display:none!important}
@@ -194,7 +195,8 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
       <li>High BEND with short BTIM: zappy electro kicks.</li>
       <li>Low PTCH, BEND 0, long DCAY: deep booming sub.</li>
     </ul>
-    <p class="dl"><a href="https://github.com/MonCalamari/DBX-K2">GitHub</a><a href="https://github.com/MonCalamari/DBX-K2/releases/latest">Latest release (.syx / .mds)</a><button type="button" class="printbtn" data-print="dbx-k2">Print</button></p>
+    <p class="dl printrow"><button type="button" class="printbtn" data-print="dbx-k2">Print</button></p>
+    <p class="dl"><a href="https://github.com/MonCalamari/DBX-K2">GitHub</a><a href="https://github.com/MonCalamari/DBX-K2/releases/latest">Latest release (.syx / .mds)</a></p>
   </div>
 </section>
 
@@ -230,7 +232,8 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
       <li>Combine with the track filter: FLTW down, FLTF up, high FLTQ – from strange high tones to the deepest rumble.</li>
       <li>Output peaks near −9 dBFS on purpose (headroom for resonant track filters). Bring FDBK, RES and DRIV up gradually – it can get loud.</li>
     </ul>
-    <p class="dl"><a href="https://github.com/MonCalamari/DBX-DR">GitHub</a><a href="https://github.com/MonCalamari/DBX-DR/releases/latest">Latest release (.syx / .mds)</a><button type="button" class="printbtn" data-print="dbx-dr">Print</button></p>
+    <p class="dl printrow"><button type="button" class="printbtn" data-print="dbx-dr">Print</button></p>
+    <p class="dl"><a href="https://github.com/MonCalamari/DBX-DR">GitHub</a><a href="https://github.com/MonCalamari/DBX-DR/releases/latest">Latest release (.syx / .mds)</a></p>
   </div>
 </section>
 </div>
@@ -462,33 +465,22 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   const block=h=>(1+44*Math.pow(srr/127,1.6))*(h/210);                          // Blockgröße relativ zur Bildhöhe
   const seedOf=t=>{let h=2166136261;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
   const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
-  // DIST: Knitter-Effekt – das Bild zerfällt in Facetten (Voronoi), jede ist leicht verschoben/gekippt, mit Falten und Licht/Schatten wie zerknülltes Papier
-  function crumple(src,w,h,seed){
-    const d=dist/127,N=8+Math.round(44*d),rnd=rng(seed),P=[];
-    for(let i=0;i<52;i++)P.push({x:rnd()*w,y:rnd()*h,ox:rnd()-.5,oy:rnd()-.5,tx:rnd()-.5,ty:rnd()-.5,lit:rnd()-.5});
-    const A=Math.pow(d,.85)*.1*Math.min(w,h),size=Math.sqrt(w*h/N),cw=Math.max(1.5,w/250)*(.6+d);
-    const ph=[rnd()*6.28,rnd()*6.28,rnd()*6.28,rnd()*6.28],wb=size*.35;                 // Wellen für unregelmäßige, geknickte Faltenkanten
-    const sd=src.getContext('2d').getImageData(0,0,w,h).data,out=new ImageData(w,h),od=out.data;
-    for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-      let b1=1e18,b2=1e18,k=0;
-      const qx=x+wb*(Math.sin(y/size*2.3+ph[0])+.5*Math.sin(y/size*5.1+ph[1])),qy=y+wb*(Math.sin(x/size*2.1+ph[2])+.5*Math.sin(x/size*4.7+ph[3]));
-      for(let i=0;i<N;i++){const p=P[i],dx=qx-p.x,dy=qy-p.y,q=dx*dx+dy*dy;if(q<b1){b2=b1;b1=q;k=i}else if(q<b2)b2=q}
-      const p=P[k];
-      let sx=x+A*p.ox*2+A*p.tx*(x-p.x)/size,sy=y+A*p.oy*2+A*p.ty*(y-p.y)/size;
-      sx=sx<0?-sx:sx>w-1?2*(w-1)-sx:sx;sy=sy<0?-sy:sy>h-1?2*(h-1)-sy:sy;sx=sx<0?0:sx>w-1?w-1:sx|0;sy=sy<0?0:sy>h-1?h-1:sy|0;   // Ränder spiegeln statt dehnen
-      const edge=Math.sqrt(b2)-Math.sqrt(b1);
-      let sh=1+p.lit*.6*d+.07*d*Math.sin(qx*.31+ph[0])*Math.sin(qy*.27+ph[2]);   // Facetten-Licht + feine Papiertextur
-      if(edge<cw)sh*=1-.5*d*(1-edge/cw);                                     // Falte: dunkle Kante
-      else if(edge<cw*2.2)sh*=1+.18*d*(1-(edge-cw)/(cw*1.2));               // heller Grat daneben
-      const si=(sy*w+sx)*4,oi=(y*w+x)*4;
-      od[oi]=Math.min(255,sd[si]*sh);od[oi+1]=Math.min(255,sd[si+1]*sh);od[oi+2]=Math.min(255,sd[si+2]*sh);od[oi+3]=255}
-    rs.width=w;rs.height=h;rs.getContext('2d').putImageData(out,0,0);return rs}
+  // DIST: Verzerrung – das Bild wird in waagerechte Streifen zerlegt, die gegeneinander verschoben werden (günstig zu rechnen)
+  function tear(src,w,h,seed){                                                  // gleiche Streifen bei jedem Neuzeichnen (Startwert pro Bild)
+    const d=dist/127,n=4+Math.round(26*d),rnd=rng(seed);
+    rs.width=w;rs.height=h;const c=rs.getContext('2d');c.clearRect(0,0,w,h);
+    const cuts=[0,h];for(let i=1;i<n;i++)cuts.push(Math.round(h*(i+rnd()*.8-.4)/n));cuts.sort((x,y)=>x-y);
+    for(let i=0;i<cuts.length-1;i++){const y0=cuts[i],sh=cuts[i+1]-y0;if(sh<1)continue;
+      const hit=rnd()<.25+.7*d,dx=hit?Math.round((rnd()-.5)*2*Math.pow(d,1.1)*w*.3):0;
+      c.drawImage(src,0,y0,w,sh,dx,y0,w,sh);
+      if(dx>0)c.drawImage(src,0,y0,w,sh,dx-w,y0,w,sh);else if(dx<0)c.drawImage(src,0,y0,w,sh,dx+w,y0,w,sh)}
+    return rs}
   function render(im,cv){
     const w=im.clientWidth,h=im.clientHeight;
     if((!srr&&!dist)||!w||!h||!im.naturalWidth){cv.style.display='none';return}
     const s=Math.min(1,640/Math.max(w,h)),W=Math.max(1,Math.round(w*s)),H=Math.max(1,Math.round(h*s));   // Effekt wird in begrenzter Auflösung gerechnet
     wk.width=W;wk.height=H;wk.getContext('2d').drawImage(im,0,0,W,H);
-    const src=dist?crumple(wk,W,H,seedOf(im.currentSrc||im.src)):wk;
+    const src=dist?tear(wk,W,H,seedOf(im.currentSrc||im.src)):wk;
     cv.width=W;cv.height=H;cv.style.display='block';const c=cv.getContext('2d');c.clearRect(0,0,W,H);
     const b=block(h)*s;
     if(srr&&b>=1.5){const tw=Math.max(1,Math.round(W/b)),th=Math.max(1,Math.round(H/b));
@@ -507,7 +499,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
     o.top=mkKnob(label,0,aria,title,v=>sync(v,o.top));
     o.mkLb=parent=>{o.lb=mkKnob(label,0,ariaLb,title,v=>sync(v,o.lb),parent,true);o.lb.setV(o.top.get());if(o.top.el.classList.contains('used'))o.lb.el.classList.add('used');return o.lb};
     return o}
-  const distK=coupled('DIST','Photo distortion (DIST)','Photo viewer distortion (DIST)','DIST: crumple the photos like a piece of paper. Works on the strip and in the enlarged view.',v=>{dist=v;redraw()});
+  const distK=coupled('DIST','Photo distortion (DIST)','Photo viewer distortion (DIST)','DIST: tear the photos into shifted horizontal slices. Works on the strip and in the enlarged view.',v=>{dist=v;redraw()});
   const srrK=coupled('SRR','Photo sample rate reduction (SRR)','Photo viewer sample rate reduction (SRR)','SRR: sample rate reduction - pixelate the photos. Works on the strip and in the enlarged view.',v=>{srr=v;redraw()});
   window._mkLbKnobs=parent=>{srrK.mkLb(parent);distK.mkLb(parent)};                   // Reihenfolge in der Leiste: DIST, SRR
   const st=document.querySelector('.strip');if(st)st.addEventListener('load',()=>{if(srr||dist)redraw()},true);   // Bilder laden nach (lazy)
