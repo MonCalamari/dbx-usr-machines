@@ -113,7 +113,7 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <a href="media/photos/signal-kommt.jpg" target="_blank" rel="noopener"><img src="media/photos/signal-kommt-t.jpg" width="274" height="420" alt="Red glowing sign reading &quot;Signal kommt&quot; behind condensation" loading="lazy"></a>
 <a href="media/photos/studio.jpg" target="_blank" rel="noopener"><img src="media/photos/studio-t.jpg" width="427" height="420" alt="My studio at night: Elektron machines, an Access Virus and a Dateq Vibe mixer, lit by their own LEDs" loading="lazy"></a>
 <a href="media/photos/horn-system.jpg" target="_blank" rel="noopener"><img src="media/photos/horn-system-t.jpg" width="431" height="420" alt="My own horn system on a wooden stage in the woods at night: Limmer 308 (self-made), 12&quot; kick horn (self-made), Martin Audio WSX" loading="lazy"></a>
-<a href="media/photos/subs-club.jpg" target="_blank" rel="noopener"><img src="media/photos/subs-club-t.jpg" width="426" height="420" alt="Two Limmer 215 bass cabinets in an empty club room covered in graffiti. The club no longer exists." loading="lazy"></a>
+<a href="media/photos/subs-club.jpg" target="_blank" rel="noopener"><img src="media/photos/subs-club-t.jpg" width="426" height="420" alt="Two Limmer 215 bass cabinets (self-made) in an empty club room covered in graffiti. The club no longer exists." loading="lazy"></a>
 <a href="media/photos/red-wall-bw.jpg" target="_blank" rel="noopener"><img src="media/photos/red-wall-bw-t.jpg" width="881" height="420" alt="Three white paper triangles hanging in front of a decayed red wall" loading="lazy"></a>
 <a href="media/photos/corridor.jpg" target="_blank" rel="noopener"><img src="media/photos/corridor-t.jpg" width="313" height="420" alt="A narrow empty corridor with ceiling lamps, fading into darkness" loading="lazy"></a>
 <a href="media/photos/bucket.jpg" target="_blank" rel="noopener"><img src="media/photos/bucket-t.jpg" width="623" height="420" alt="The mounting of a German guardrail (Leitplanke), filled with water, dirt and rotten leaves" loading="lazy"></a>
@@ -445,9 +445,9 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   window._pix={strip,lb};
   const redraw=()=>{clearTimeout(raf);raf=setTimeout(()=>{strip();lb()},24)};          // zusammengefasst, damit Ziehen am Regler flüssig bleibt
   let dk=null,dk2=null;
-  dk=mkKnob('DIST',0,'Photo strip distortion (pixelate)','DIST: drag, scroll or use the arrow keys to pixelate the photos, in the strip and in the enlarged view.',v=>{dist=v;if(dk2)dk2.setV(v);redraw()});
+  dk=mkKnob('DIST',0,'Photo strip distortion (pixelate)','DIST: drag, scroll or use the arrow keys to pixelate the photos, in the strip and in the enlarged view.',v=>{dist=v;dk.el.classList.add('used');if(dk2){dk2.setV(v);dk2.el.classList.add('used')}redraw()});
   // zweite Instanz für die große Ansicht (wird von der Galerie in ihre Leiste gesetzt), gekoppelt mit der oberen
-  window._mkDistKnob=parent=>{dk2=mkKnob('DIST',0,'Photo viewer distortion (pixelate)','DIST: pixelate the photos. Same control as above the strip.',v=>{dist=v;dk.setV(v);redraw()},parent,true);dk2.setV(dist);
+  window._mkDistKnob=parent=>{dk2=mkKnob('DIST',0,'Photo viewer distortion (pixelate)','DIST: pixelate the photos. Same control as above the strip.',v=>{dist=v;dk.setV(v);dk.el.classList.add('used');dk2.el.classList.add('used');redraw()},parent,true);dk2.setV(dist);
     if(dk.el.classList.contains('used'))dk2.el.classList.add('used');return dk2};
   const st=document.querySelector('.strip');if(st)st.addEventListener('load',()=>{if(dist)redraw()},true);   // Bilder laden nach (lazy)
   let rt=0;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(dist)redraw()},150)});
