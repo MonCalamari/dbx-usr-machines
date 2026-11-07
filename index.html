@@ -62,6 +62,8 @@ ul.notes li::marker{color:var(--acc)}
 .strip a{flex:0 0 auto;scroll-snap-align:start;line-height:0;border:1px solid var(--s2)}.strip a:hover,.strip a:focus-visible{border-color:#e13226}
 .strip img{height:210px;width:auto;display:block}
 .photos .small{margin:8px 0 0}.photos .small:last-of-type{margin-bottom:32px}
+.phead{display:flex;align-items:center;gap:14px;margin:0 0 12px}.phead h2{flex:1;margin:0}
+.lfo{display:block;width:72px;height:66px;cursor:ns-resize;touch-action:none;border:1px solid var(--s2);background:#e13226;image-rendering:pixelated}.lfo:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:16px 16px 170px;line-height:1.4}
 .lb.open{display:flex}
 .lb img{max-width:min(96vw,1500px);max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px);object-fit:contain;border:1px solid var(--s2);cursor:pointer}
@@ -110,7 +112,7 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <a href="media/photos/stairs.jpg" target="_blank" rel="noopener"><img src="media/photos/stairs-t.jpg" width="319" height="420" alt="A terrazzo staircase seen from above" loading="lazy"></a>
 <a href="media/photos/frozen-leaves.jpg" target="_blank" rel="noopener"><img src="media/photos/frozen-leaves-t.jpg" width="555" height="420" alt="Collapsed giant leaves in a winter garden, black and white" loading="lazy"></a>
 <a href="media/photos/steel-plates.jpg" target="_blank" rel="noopener"><img src="media/photos/steel-plates-t.jpg" width="304" height="420" alt="Dark welded steel plates meeting at angles" loading="lazy"></a>
-<a href="media/photos/dark-room.jpg" target="_blank" rel="noopener"><img src="media/photos/dark-room-t.jpg" width="559" height="420" alt="A dark concrete room filled with water in an old bunker, seen through a broken wall opening" loading="lazy"></a>
+<a href="media/photos/dark-room.jpg" target="_blank" rel="noopener"><img src="media/photos/dark-room-t.jpg" width="559" height="420" alt="A dark concrete room filled with water in an old air-raid shelter (Luftschutzbunker), seen through a hole in the wall" loading="lazy"></a>
 <a href="media/photos/spider.jpg" target="_blank" rel="noopener"><img src="media/photos/spider-t.jpg" width="559" height="420" alt="A spider in its web in front of a bright strip of light" loading="lazy"></a>
 <a href="media/photos/door.jpg" target="_blank" rel="noopener"><img src="media/photos/door-t.jpg" width="311" height="420" alt="A dark doorway with graffiti and stickers on the frame" loading="lazy"></a>
 <a href="media/photos/ivy-wall.jpg" target="_blank" rel="noopener"><img src="media/photos/ivy-wall-t.jpg" width="232" height="420" alt="A crumbling stone gatepost overgrown with ivy at night" loading="lazy"></a>
@@ -386,6 +388,35 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   au.addEventListener('volumechange',()=>{box._lev=au.muted?0:au.volume;draw()});
   draw();
 });
+
+// ---- LFO-Regler über den Fotos: bestimmt die Geschwindigkeit des Durchlaufs (0 = steht, Standard 32) ----
+(function(){
+  const h2=document.querySelector('.photos h2');if(!h2||RM)return;
+  const cv=document.createElement('canvas'),W=24,H=22,S=3,DEF=32;
+  cv.className='lfo';cv.width=W*S;cv.height=H*S;cv.tabIndex=0;cv.setAttribute('role','slider');
+  cv.setAttribute('aria-label','Photo strip speed (LFO)');cv.setAttribute('aria-valuemin','0');cv.setAttribute('aria-valuemax','127');
+  cv.title='LFO: drag, scroll or use the arrow keys to change the speed of the photo strip. Double-click resets.';
+  const head=document.createElement('div');head.className='phead';h2.replaceWith(head);head.appendChild(h2);head.appendChild(cv);
+  let v=DEF;
+  window._stripSpeed=()=>400*Math.pow(v/127,2);                             // Pixel pro Sekunde; 32 ≈ 25 px/s, 127 = 400 px/s
+  const draw=()=>{const B=new Uint8Array(W*H),px=(x,y)=>{x=Math.round(x);y=Math.round(y);if(x>=0&&x<W&&y>=0&&y<H)B[y*W+x]=1};
+    let x0=Math.round((W-11)/2);for(const ch of 'LFO'){const g=F[ch];for(let j=0;j<5;j++)for(let i=0;i<3;i++)if(g[j*3+i]=='1')px(x0+i,2+j);x0+=4}
+    const cx=12,cy=14.5,r=6;for(let a=0;a<360;a+=3)px(cx+Math.cos(a*Math.PI/180)*r,cy+Math.sin(a*Math.PI/180)*r);
+    const ang=(225-270*v/127)*Math.PI/180,ix=Math.round(cx+Math.cos(ang)*3.5),iy=Math.round(cy-Math.sin(ang)*3.5);px(ix,iy);px(ix+1,iy);px(ix,iy+1);px(ix+1,iy+1);
+    const c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(B[y*W+x]){c.fillStyle='#9a2a1f';c.fillRect(x*S,y*S,S,S);c.fillStyle='#3a0a06';c.fillRect(x*S+.4,y*S+.4,S-.8,S-.8)}
+    cv.setAttribute('aria-valuenow',v);cv.setAttribute('aria-valuetext',v==0?'stopped':Math.round(window._stripSpeed())+' pixels per second')};
+  const set=n=>{v=Math.max(0,Math.min(127,Math.round(n)));draw()};
+  let y0=0,v0=0,drag=false;
+  cv.addEventListener('pointerdown',e=>{drag=true;y0=e.clientY;v0=v;cv.setPointerCapture(e.pointerId);cv.focus();e.preventDefault()});
+  cv.addEventListener('pointermove',e=>{if(drag)set(v0+(y0-e.clientY)*.8)});
+  const end=()=>{drag=false};cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
+  cv.addEventListener('wheel',e=>{e.preventDefault();set(v+(e.deltaY<0?4:-4))},{passive:false});
+  cv.addEventListener('dblclick',()=>set(DEF));
+  cv.addEventListener('keydown',e=>{const k=e.key,d={ArrowUp:2,ArrowRight:2,ArrowDown:-2,ArrowLeft:-2,PageUp:10,PageDown:-10}[k];
+    if(d!==undefined){e.preventDefault();set(v+d)}else if(k=='Home'){e.preventDefault();set(0)}else if(k=='End'){e.preventDefault();set(127)}});
+  draw();
+})();
 })();
 // Hintergrundbeleuchtung geht an, dann baut sich das Display auf – sobald der Bereich sichtbar ist
 (function(){
@@ -443,7 +474,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
     c.addEventListener('click',e=>{if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();window._photoOpen&&window._photoOpen(k)});st.appendChild(c)});
   st.dataset.auto='1';st.style.scrollSnapType='none';
   const loopW=()=>st.children[orig.length].offsetLeft-st.children[0].offsetLeft;
-  let pos=0,last=performance.now(),hold=0,hover=false,vis=true;const V=26;      // Pixel pro Sekunde
+  let pos=0,last=performance.now(),hold=0,hover=false,vis=true;const speed=()=>window._stripSpeed?window._stripSpeed():26;      // Pixel pro Sekunde
   const pause=ms=>{hold=performance.now()+ms};
   ['pointerdown','touchstart','wheel','focusin'].forEach(ev=>st.addEventListener(ev,()=>pause(4000),{passive:true}));
   st.addEventListener('mouseenter',()=>hover=true);st.addEventListener('mouseleave',()=>{hover=false;pause(600)});
@@ -451,7 +482,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   if('IntersectionObserver' in window)new IntersectionObserver(es=>es.forEach(e=>vis=e.isIntersecting)).observe(st);
   const tick=t=>{const dt=Math.min(t-last,100)/1000;last=t;
     if(vis&&!hover&&t>=hold&&!document.hidden&&!document.querySelector('.lb.open')){
-      const L=loopW();pos+=V*dt;if(pos>=L)pos-=L;st.scrollLeft=pos}
+      const L=loopW();pos+=speed()*dt;if(pos>=L)pos-=L;st.scrollLeft=pos}
     requestAnimationFrame(tick)};
   requestAnimationFrame(tick);
 })();
