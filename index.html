@@ -104,7 +104,7 @@ DSP56303 assembler to the Machine Dump Standard 1.1. Both machines run on <b>MKI
 tracks, and are cycle-certified. The sound ideas come from my DIY groovebox: my own firmware, written from scratch, running on the
 <a href="https://codeberg.org/positionhigh/MicroDexed-touch">MicroDexed-touch</a> hardware. The machines are rebuilt for the Machinedrum
 in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pressed, not polished</b>.</p>
-<p>I use AI, and I still try to make something that is not the 15th smoothed-out version where everything just becomes the same. I want individual results anyway. I try to build what I often miss: <b>machines with character</b>. Clean on the surface, raw in the sound. Only where there is friction does something really happen.</p>
+<p>I use AI, and I still try to make something that is not the 15th smoothed-out version where everything just becomes the same. I want individual results anyway. I try to build what I often miss: <b>machines with character</b>. Clean on the surface, raw in the sound.</p>
 </section>
 
 <hr class="dots">
@@ -430,28 +430,49 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   // PTCH: Geschwindigkeit (0 = steht, Standard 32 ≈ 25 px/s, 127 = 400 px/s); nur ohne „weniger Bewegung“
   if(!RM){const k=mkKnob('PTCH',32,'Photo strip speed (PTCH)','PTCH: drag, scroll or use the arrow keys to change the speed of the photo strip.',()=>{});
     window._stripSpeed=()=>400*Math.pow(k.get()/127,2)}
-  // DIST: Verpixeln (0 = aus, 127 = grobe Blöcke); wirkt auf den Streifen und auf die große Ansicht
-  const tmp=document.createElement('canvas');let dist=0,raf=0;
-  const block=h=>(1+44*Math.pow(dist/127,1.6))*(h/210);                        // Blockgröße relativ zur Bildhöhe
-  function pixelate(im,cv){
-    const w=im.clientWidth,h=im.clientHeight,b=block(h);
-    if(!dist||!w||!h||!im.naturalWidth||b<1.5){cv.style.display='none';return}
-    cv.width=w;cv.height=h;cv.style.display='block';
-    const tw=Math.max(1,Math.round(w/b)),th=Math.max(1,Math.round(h/b));
-    tmp.width=tw;tmp.height=th;const t=tmp.getContext('2d');t.imageSmoothingEnabled=true;t.imageSmoothingQuality='high';t.drawImage(im,0,0,tw,th);
-    const c=cv.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,w,h);c.drawImage(tmp,0,0,tw,th,0,0,w,h)}
+  // Bildeffekte (ohne Farbänderung): SRR = Sample-Rate-Reduction (verpixelt), DIST = Verzerrung (waagerechte Streifen werden zerrissen und gegeneinander verschoben).
+  // Beide wirken auf den Streifen und auf die große Ansicht; die Fotos selbst bleiben unberührt, es wird eine Schicht darüber gezeichnet.
+  const tmp=document.createElement('canvas'),wk=document.createElement('canvas'),rs=document.createElement('canvas');let srr=0,dist=0,raf=0;
+  const block=h=>(1+44*Math.pow(srr/127,1.6))*(h/210);                          // Blockgröße relativ zur Bildhöhe
+  const seedOf=t=>{let h=2166136261;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
+  const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+  function tear(src,w,h,seed){                                                  // gleiche Streifen bei jedem Neuzeichnen (Startwert pro Bild)
+    const d=dist/127,n=4+Math.round(26*d),rnd=rng(seed);
+    rs.width=w;rs.height=h;const c=rs.getContext('2d');c.clearRect(0,0,w,h);
+    const cuts=[0,h];for(let i=1;i<n;i++)cuts.push(Math.round(h*(i+rnd()*.8-.4)/n));cuts.sort((x,y)=>x-y);
+    for(let i=0;i<cuts.length-1;i++){const y0=cuts[i],sh=cuts[i+1]-y0;if(sh<1)continue;
+      const hit=rnd()<.25+.7*d,dx=hit?Math.round((rnd()-.5)*2*Math.pow(d,1.1)*w*.3):0;
+      c.drawImage(src,0,y0,w,sh,dx,y0,w,sh);
+      if(dx>0)c.drawImage(src,0,y0,w,sh,dx-w,y0,w,sh);else if(dx<0)c.drawImage(src,0,y0,w,sh,dx+w,y0,w,sh)}
+    return rs}
+  function render(im,cv){
+    const w=im.clientWidth,h=im.clientHeight;
+    if((!srr&&!dist)||!w||!h||!im.naturalWidth){cv.style.display='none';return}
+    wk.width=w;wk.height=h;wk.getContext('2d').drawImage(im,0,0,w,h);
+    const src=dist?tear(wk,w,h,seedOf(im.currentSrc||im.src)):wk;
+    cv.width=w;cv.height=h;cv.style.display='block';const c=cv.getContext('2d');c.clearRect(0,0,w,h);
+    const b=block(h);
+    if(srr&&b>=1.5){const tw=Math.max(1,Math.round(w/b)),th=Math.max(1,Math.round(h/b));
+      tmp.width=tw;tmp.height=th;const t=tmp.getContext('2d');t.imageSmoothingEnabled=true;t.imageSmoothingQuality='high';t.drawImage(src,0,0,w,h,0,0,tw,th);
+      c.imageSmoothingEnabled=false;c.drawImage(tmp,0,0,tw,th,0,0,w,h)}
+    else c.drawImage(src,0,0)}
   const strip=()=>document.querySelectorAll('.strip a').forEach(a=>{const im=a.querySelector('img');let cv=a.querySelector('canvas.px');
-    if(!cv){if(!dist)return;cv=document.createElement('canvas');cv.className='px';a.appendChild(cv)}pixelate(im,cv)});
-  const lb=()=>{const im=document.querySelector('.lbimg img'),cv=document.querySelector('.lbpx');if(im&&cv)pixelate(im,cv)};
+    if(!cv){if(!srr&&!dist)return;cv=document.createElement('canvas');cv.className='px';a.appendChild(cv)}render(im,cv)});
+  const lb=()=>{const im=document.querySelector('.lbimg img'),cv=document.querySelector('.lbpx');if(im&&cv)render(im,cv)};
   window._pix={strip,lb};
   const redraw=()=>{clearTimeout(raf);raf=setTimeout(()=>{strip();lb()},24)};          // zusammengefasst, damit Ziehen am Regler flüssig bleibt
-  let dk=null,dk2=null;
-  dk=mkKnob('DIST',0,'Photo strip distortion (pixelate)','DIST: drag, scroll or use the arrow keys to pixelate the photos, in the strip and in the enlarged view.',v=>{dist=v;dk.el.classList.add('used');if(dk2){dk2.setV(v);dk2.el.classList.add('used')}redraw()});
-  // zweite Instanz für die große Ansicht (wird von der Galerie in ihre Leiste gesetzt), gekoppelt mit der oberen
-  window._mkDistKnob=parent=>{dk2=mkKnob('DIST',0,'Photo viewer distortion (pixelate)','DIST: pixelate the photos. Same control as above the strip.',v=>{dist=v;dk.setV(v);dk.el.classList.add('used');dk2.el.classList.add('used');redraw()},parent,true);dk2.setV(dist);
-    if(dk.el.classList.contains('used'))dk2.el.classList.add('used');return dk2};
-  const st=document.querySelector('.strip');if(st)st.addEventListener('load',()=>{if(dist)redraw()},true);   // Bilder laden nach (lazy)
-  let rt=0;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(dist)redraw()},150)});
+  // Gekoppelte Regler: je einer über den Fotos und einer in der großen Ansicht (die Galerie setzt ihn in ihre Leiste)
+  function coupled(label,aria,ariaLb,title,apply){
+    const o={top:null,lb:null};
+    const sync=(v,from)=>{apply(v);[o.top,o.lb].forEach(k=>{if(k){if(k!==from)k.setV(v);k.el.classList.add('used')}})};
+    o.top=mkKnob(label,0,aria,title,v=>sync(v,o.top));
+    o.mkLb=parent=>{o.lb=mkKnob(label,0,ariaLb,title,v=>sync(v,o.lb),parent,true);o.lb.setV(o.top.get());if(o.top.el.classList.contains('used'))o.lb.el.classList.add('used');return o.lb};
+    return o}
+  const distK=coupled('DIST','Photo distortion (DIST)','Photo viewer distortion (DIST)','DIST: tear the photos into shifted horizontal slices. Works on the strip and in the enlarged view.',v=>{dist=v;redraw()});
+  const srrK=coupled('SRR','Photo sample rate reduction (SRR)','Photo viewer sample rate reduction (SRR)','SRR: sample rate reduction - pixelate the photos. Works on the strip and in the enlarged view.',v=>{srr=v;redraw()});
+  window._mkLbKnobs=parent=>{srrK.mkLb(parent);distK.mkLb(parent)};                   // Reihenfolge in der Leiste: DIST, SRR
+  const st=document.querySelector('.strip');if(st)st.addEventListener('load',()=>{if(srr||dist)redraw()},true);   // Bilder laden nach (lazy)
+  let rt=0;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(srr||dist)redraw()},150)});
 })();
 })();
 // Hintergrundbeleuchtung geht an, dann baut sich das Display auf – sobald der Bereich sichtbar ist
@@ -487,7 +508,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   const lb=document.createElement('div');lb.className='lb';lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','Photo viewer');
   lb.innerHTML='<div class="lbimg"><img alt=""><canvas class="lbpx"></canvas></div><p class="cap"></p><div class="lbnav"><button type="button" data-a="prev" aria-label="Previous photo">&#9664;</button><span class="cnt"></span><button type="button" data-a="next" aria-label="Next photo">&#9654;</button><button type="button" data-a="close" aria-label="Close">&#10005; ESC</button></div>';
   document.body.appendChild(lb);
-  if(window._mkDistKnob)window._mkDistKnob(lb.querySelector('.lbnav'));
+  if(window._mkLbKnobs)window._mkLbKnobs(lb.querySelector('.lbnav'));
   const img=lb.querySelector('.lbimg img'),cap=lb.querySelector('.cap'),cnt=lb.querySelector('.cnt'),n=links.length;
   let i=0,last=null;
   const show=k=>{i=(k+n)%n;const a=links[i],t=a.querySelector('img');img.src=a.href;img.alt=t.alt;if(window._pix)window._pix.lb();cap.textContent=t.alt;cnt.textContent=String(i+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');[i+1,i-1].forEach(j=>{new Image().src=links[(j+n)%n].href})};
