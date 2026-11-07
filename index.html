@@ -62,11 +62,11 @@ ul.notes li::marker{color:var(--acc)}
 .strip a{flex:0 0 auto;scroll-snap-align:start;line-height:0;border:1px solid var(--s2)}.strip a:hover,.strip a:focus-visible{border-color:#e13226}
 .strip img{height:210px;width:auto;display:block}
 .photos .small{margin:8px 0 0}.photos .small:last-of-type{margin-bottom:32px}
-.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;flex-direction:column;padding:16px;line-height:1.4}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:16px 16px 170px;line-height:1.4}
 .lb.open{display:flex}
-.lb img{max-width:min(96vw,1500px);max-height:calc(100vh - 170px);max-height:calc(100dvh - 170px);object-fit:contain;border:1px solid var(--s2);cursor:pointer}
-.lb .cap{max-width:860px;margin:12px 0 0;font-size:13px;color:var(--s3);text-align:center;min-height:1.4em}
-.lb .lbnav{display:flex;gap:10px;align-items:center;margin-top:14px;font-size:13px;color:var(--s3)}
+.lb img{max-width:min(96vw,1500px);max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px);object-fit:contain;border:1px solid var(--s2);cursor:pointer}
+.lb .cap{position:absolute;left:50%;transform:translateX(-50%);bottom:70px;width:min(92vw,860px);margin:0;font-size:13px;color:var(--s3);text-align:center}
+.lb .lbnav{position:absolute;left:0;right:0;bottom:18px;display:flex;gap:10px;align-items:center;justify-content:center;font-size:13px;color:var(--s3)}
 .lb button{background:#000;color:var(--ink);border:1px solid var(--s2);padding:6px 16px;font:inherit;cursor:pointer}
 .lb button:hover,.lb button:focus-visible{border-color:#e13226;color:#e13226;outline:none}
 .small{font-size:13px;color:var(--s3)}
@@ -110,7 +110,7 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <a href="media/photos/stairs.jpg" target="_blank" rel="noopener"><img src="media/photos/stairs-t.jpg" width="319" height="420" alt="A terrazzo staircase seen from above" loading="lazy"></a>
 <a href="media/photos/frozen-leaves.jpg" target="_blank" rel="noopener"><img src="media/photos/frozen-leaves-t.jpg" width="555" height="420" alt="Collapsed giant leaves in a winter garden, black and white" loading="lazy"></a>
 <a href="media/photos/steel-plates.jpg" target="_blank" rel="noopener"><img src="media/photos/steel-plates-t.jpg" width="304" height="420" alt="Dark welded steel plates meeting at angles" loading="lazy"></a>
-<a href="media/photos/dark-room.jpg" target="_blank" rel="noopener"><img src="media/photos/dark-room-t.jpg" width="559" height="420" alt="A dark concrete room filled with water, seen through a broken wall opening" loading="lazy"></a>
+<a href="media/photos/dark-room.jpg" target="_blank" rel="noopener"><img src="media/photos/dark-room-t.jpg" width="559" height="420" alt="A dark concrete room filled with water in an old bunker, seen through a broken wall opening" loading="lazy"></a>
 <a href="media/photos/spider.jpg" target="_blank" rel="noopener"><img src="media/photos/spider-t.jpg" width="559" height="420" alt="A spider in its web in front of a bright strip of light" loading="lazy"></a>
 <a href="media/photos/door.jpg" target="_blank" rel="noopener"><img src="media/photos/door-t.jpg" width="311" height="420" alt="A dark doorway with graffiti and stickers on the frame" loading="lazy"></a>
 <a href="media/photos/ivy-wall.jpg" target="_blank" rel="noopener"><img src="media/photos/ivy-wall-t.jpg" width="232" height="420" alt="A crumbling stone gatepost overgrown with ivy at night" loading="lazy"></a>
@@ -395,14 +395,24 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   els.forEach(e=>io.observe(e));
 })();
 
-// Fotostreifen: bei jedem Besuch eine andere Reihenfolge (muss vor der Galerie laufen, die die Reihenfolge übernimmt)
+// Fotostreifen: bei jedem Besuch eine andere Reihenfolge (muss vor der Galerie laufen, die die Reihenfolge übernimmt).
+// Das Studio steht immer vorn, „Signal kommt“ immer ungefähr in der Mitte des sichtbaren Streifens (Breite wird ausgerechnet).
 (function(){
   const st=document.querySelector('.strip');if(!st)return;
-  const PIN=['signal-kommt','studio'];                                      // diese zwei stehen immer vorn, damit sie sichtbar sind
   const all=[...st.children],name=e=>e.getAttribute('href').split('/').pop().replace('.jpg','');
-  const pinned=PIN.map(p=>all.find(e=>name(e)==p)).filter(Boolean),a=all.filter(e=>!pinned.includes(e));
+  const first=all.find(e=>name(e)=='studio'),sig=all.find(e=>name(e)=='signal-kommt');
+  const a=all.filter(e=>e!==first&&e!==sig);
   for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
-  pinned.concat(a).forEach(e=>st.appendChild(e));
+  const H=210,gap=8,wOf=e=>{const m=e.querySelector('img');return m.getAttribute('width')*H/m.getAttribute('height')+2};
+  const order=[];let x=0;
+  if(first){order.push(first);x+=wOf(first)+gap}
+  if(sig){const half=st.clientWidth/2,ws=wOf(sig);let best=0,bestErr=Infinity,xs=x;
+    for(let k=0;k<=a.length;k++){const err=Math.abs(xs+ws/2-half);if(err<bestErr){bestErr=err;best=k}if(k<a.length)xs+=wOf(a[k])+gap}
+    for(let k=0;k<best;k++)order.push(a.shift());                         // so viele Bilder vor „Signal kommt“, dass es der Streifenmitte am nächsten liegt
+    order.push(sig)}
+  st.style.scrollSnapType='none';
+  order.concat(a).forEach(e=>st.appendChild(e));
+  st.scrollLeft=0;requestAnimationFrame(()=>{st.scrollLeft=0;if(!st.dataset.auto)st.style.scrollSnapType=''});
 })();
 // Fotogalerie: Klick vergrößert, Pfeile/Wischen blättern, Esc schließt
 (function(){
@@ -414,6 +424,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   let i=0,last=null;
   const show=k=>{i=(k+n)%n;const a=links[i],t=a.querySelector('img');img.src=a.href;img.alt=t.alt;cap.textContent=t.alt;cnt.textContent=String(i+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');[i+1,i-1].forEach(j=>{new Image().src=links[(j+n)%n].href})};
   const open=k=>{last=document.activeElement;show(k);lb.classList.add('open');document.body.style.overflow='hidden';lb.querySelector('[data-a=close]').focus()};
+  window._photoOpen=open;
   const close=()=>{lb.classList.remove('open');document.body.style.overflow='';if(last&&last.focus)last.focus()};
   links.forEach((a,k)=>a.addEventListener('click',e=>{if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();open(k)}));
   lb.addEventListener('click',e=>{const b=e.target.closest('button');if(b){const x=b.dataset.a;if(x=='prev')show(i-1);else if(x=='next')show(i+1);else close()}else if(e.target===img)show(i+1);else if(e.target===lb)close()});
@@ -422,6 +433,27 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
     else if(e.key=='Tab'){const bs=[...lb.querySelectorAll('button')],f=bs.indexOf(document.activeElement);e.preventDefault();bs[(f+(e.shiftKey?-1:1)+bs.length)%bs.length].focus()}});
   let x0=null;lb.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
   lb.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)show(i+(dx<0?1:-1))});
+})();
+
+// Fotostreifen läuft ganz langsam von links nach rechts durch (nahtlose Schleife); pausiert bei Berühren, Hover und geöffneter Galerie
+(function(){
+  const st=document.querySelector('.strip');if(!st||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const orig=[...st.children];
+  orig.forEach((a,k)=>{const c=a.cloneNode(true);c.setAttribute('data-clone','');c.setAttribute('aria-hidden','true');c.tabIndex=-1;
+    c.addEventListener('click',e=>{if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();window._photoOpen&&window._photoOpen(k)});st.appendChild(c)});
+  st.dataset.auto='1';st.style.scrollSnapType='none';
+  const loopW=()=>st.children[orig.length].offsetLeft-st.children[0].offsetLeft;
+  let pos=0,last=performance.now(),hold=0,hover=false,vis=true;const V=26;      // Pixel pro Sekunde
+  const pause=ms=>{hold=performance.now()+ms};
+  ['pointerdown','touchstart','wheel','focusin'].forEach(ev=>st.addEventListener(ev,()=>pause(4000),{passive:true}));
+  st.addEventListener('mouseenter',()=>hover=true);st.addEventListener('mouseleave',()=>{hover=false;pause(600)});
+  st.addEventListener('scroll',()=>{if(Math.abs(st.scrollLeft-Math.round(pos))>3){pos=st.scrollLeft;pause(4000)}},{passive:true});
+  if('IntersectionObserver' in window)new IntersectionObserver(es=>es.forEach(e=>vis=e.isIntersecting)).observe(st);
+  const tick=t=>{const dt=Math.min(t-last,100)/1000;last=t;
+    if(vis&&!hover&&t>=hold&&!document.hidden&&!document.querySelector('.lb.open')){
+      const L=loopW();pos+=V*dt;if(pos>=L)pos-=L;st.scrollLeft=pos}
+    requestAnimationFrame(tick)};
+  requestAnimationFrame(tick);
 })();
 </script>
 </body>
