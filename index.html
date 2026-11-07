@@ -74,6 +74,7 @@ ul.notes li::marker{color:var(--acc)}
 .lb.open{display:flex}
 .lb img{max-width:min(96vw,1500px);max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px);object-fit:contain;border:1px solid var(--s2);cursor:pointer}
 .lb .cap{position:absolute;left:50%;transform:translateX(-50%);bottom:70px;width:min(92vw,860px);margin:0;font-size:13px;color:var(--s3);text-align:center}
+.lb .lfo{width:48px;height:44px;margin-right:6px}
 .lb .lbnav{position:absolute;left:0;right:0;bottom:18px;display:flex;gap:10px;align-items:center;justify-content:center;font-size:13px;color:var(--s3)}
 .lb button{background:#000;color:var(--ink);border:1px solid var(--s2);padding:6px 16px;font:inherit;cursor:pointer}
 .lb button:hover,.lb button:focus-visible{border-color:#e13226;color:#e13226;outline:none}
@@ -132,7 +133,7 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <a href="media/photos/lamp-below.jpg" target="_blank" rel="noopener"><img src="media/photos/lamp-below-t.jpg" width="271" height="420" alt="A street lamp seen from directly below against a dark sky" loading="lazy"></a>
 </div>
 <p class="small">My own photos (mostly Nikon D3400 and Panasonic G81). Click to enlarge, then browse with the arrow keys or by swiping.</p>
-<p class="small">Many of the speakers shown are self-built: the tops, the 12" kick horns and the Limmer cabinets (Limmer 308 in the woods, Limmer 215 in a club that no longer exists), with Martin Audio WSX below the horns.</p>
+<p class="small">Many of the speakers shown are self-built: the tops (Limmer 308), the 12-inch kick horns and the Limmer 215 cabinets. Below the horns stand Martin Audio WSX. The club with the graffiti no longer exists.</p>
 </section>
 
 <h2 class="btb">Back to business</h2>
@@ -402,7 +403,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
 (function(){
   const h2=document.querySelector('.photos h2');if(!h2)return;
   const W=24,H=22,S=3,head=document.createElement('div');head.className='phead';h2.replaceWith(head);head.appendChild(h2);
-  function mkKnob(label,def,aria,title,onChange){
+  function mkKnob(label,def,aria,title,onChange,parent,first){
     const cv=document.createElement('canvas');cv.className='lfo';cv.width=W*S;cv.height=H*S;cv.tabIndex=0;cv.setAttribute('role','slider');
     cv.setAttribute('aria-label',aria);cv.setAttribute('aria-valuemin','0');cv.setAttribute('aria-valuemax','127');cv.title=title+' Double-click resets.';
     let v=def;
@@ -414,6 +415,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
       for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(B[y*W+x]){c.fillStyle='#9a2a1f';c.fillRect(x*S,y*S,S,S);c.fillStyle='#3a0a06';c.fillRect(x*S+.4,y*S+.4,S-.8,S-.8)}
       cv.setAttribute('aria-valuenow',v)};
     const set=n=>{v=Math.max(0,Math.min(127,Math.round(n)));draw();onChange(v)};
+    const setV=n=>{v=Math.max(0,Math.min(127,Math.round(n)));draw()};
     const used=()=>cv.classList.add('used');['pointerdown','wheel','keydown','dblclick'].forEach(ev=>cv.addEventListener(ev,used,{passive:true}));
     let y0=0,v0=0,drag=false;
     cv.addEventListener('pointerdown',e=>{drag=true;y0=e.clientY;v0=v;cv.setPointerCapture(e.pointerId);cv.focus();e.preventDefault()});
@@ -422,8 +424,8 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
     cv.addEventListener('wheel',e=>{e.preventDefault();set(v+(e.deltaY<0?4:-4))},{passive:false});
     cv.addEventListener('dblclick',()=>set(def));
     cv.addEventListener('keydown',e=>{const k=e.key,d={ArrowUp:2,ArrowRight:2,ArrowDown:-2,ArrowLeft:-2,PageUp:10,PageDown:-10}[k];
-      if(d!==undefined){e.preventDefault();set(v+d)}else if(k=='Home'){e.preventDefault();set(0)}else if(k=='End'){e.preventDefault();set(127)}});
-    draw();head.appendChild(cv);return {get:()=>v};
+      if(d!==undefined){e.preventDefault();e.stopPropagation();set(v+d)}else if(k=='Home'){e.preventDefault();e.stopPropagation();set(0)}else if(k=='End'){e.preventDefault();e.stopPropagation();set(127)}});
+    draw();const p=parent||head;if(first)p.insertBefore(cv,p.firstChild);else p.appendChild(cv);return {get:()=>v,setV,el:cv};
   }
   // PTCH: Geschwindigkeit (0 = steht, Standard 32 ≈ 25 px/s, 127 = 400 px/s); nur ohne „weniger Bewegung“
   if(!RM){const k=mkKnob('PTCH',32,'Photo strip speed (PTCH)','PTCH: drag, scroll or use the arrow keys to change the speed of the photo strip.',()=>{});
@@ -443,7 +445,11 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   const lb=()=>{const im=document.querySelector('.lbimg img'),cv=document.querySelector('.lbpx');if(im&&cv)pixelate(im,cv)};
   window._pix={strip,lb};
   const redraw=()=>{clearTimeout(raf);raf=setTimeout(()=>{strip();lb()},24)};          // zusammengefasst, damit Ziehen am Regler flüssig bleibt
-  mkKnob('DIST',0,'Photo strip distortion (pixelate)','DIST: drag, scroll or use the arrow keys to pixelate the photos, in the strip and in the enlarged view.',v=>{dist=v;redraw()});
+  let dk=null,dk2=null;
+  dk=mkKnob('DIST',0,'Photo strip distortion (pixelate)','DIST: drag, scroll or use the arrow keys to pixelate the photos, in the strip and in the enlarged view.',v=>{dist=v;if(dk2)dk2.setV(v);redraw()});
+  // zweite Instanz für die große Ansicht (wird von der Galerie in ihre Leiste gesetzt), gekoppelt mit der oberen
+  window._mkDistKnob=parent=>{dk2=mkKnob('DIST',0,'Photo viewer distortion (pixelate)','DIST: pixelate the photos. Same control as above the strip.',v=>{dist=v;dk.setV(v);redraw()},parent,true);dk2.setV(dist);
+    if(dk.el.classList.contains('used'))dk2.el.classList.add('used');return dk2};
   const st=document.querySelector('.strip');if(st)st.addEventListener('load',()=>{if(dist)redraw()},true);   // Bilder laden nach (lazy)
   let rt=0;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(dist)redraw()},150)});
 })();
@@ -481,6 +487,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   const lb=document.createElement('div');lb.className='lb';lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','Photo viewer');
   lb.innerHTML='<div class="lbimg"><img alt=""><canvas class="lbpx"></canvas></div><p class="cap"></p><div class="lbnav"><button type="button" data-a="prev" aria-label="Previous photo">&#9664;</button><span class="cnt"></span><button type="button" data-a="next" aria-label="Next photo">&#9654;</button><button type="button" data-a="close" aria-label="Close">&#10005; ESC</button></div>';
   document.body.appendChild(lb);
+  if(window._mkDistKnob)window._mkDistKnob(lb.querySelector('.lbnav'));
   const img=lb.querySelector('.lbimg img'),cap=lb.querySelector('.cap'),cnt=lb.querySelector('.cnt'),n=links.length;
   let i=0,last=null;
   const show=k=>{i=(k+n)%n;const a=links[i],t=a.querySelector('img');img.src=a.href;img.alt=t.alt;if(window._pix)window._pix.lb();cap.textContent=t.alt;cnt.textContent=String(i+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');[i+1,i-1].forEach(j=>{new Image().src=links[(j+n)%n].href})};
@@ -493,7 +500,7 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   lb.addEventListener('click',e=>{const b=e.target.closest('button');if(b){const x=b.dataset.a;if(x=='prev')show(i-1);else if(x=='next')show(i+1);else close()}else if(e.target===img)show(i+1);else if(e.target===lb)close()});
   document.addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return;
     if(e.key=='Escape')close();else if(e.key=='ArrowRight')show(i+1);else if(e.key=='ArrowLeft')show(i-1);
-    else if(e.key=='Tab'){const bs=[...lb.querySelectorAll('button')],f=bs.indexOf(document.activeElement);e.preventDefault();bs[(f+(e.shiftKey?-1:1)+bs.length)%bs.length].focus()}});
+    else if(e.key=='Tab'){const bs=[...lb.querySelectorAll('button,.lfo')],f=bs.indexOf(document.activeElement);e.preventDefault();bs[(f+(e.shiftKey?-1:1)+bs.length)%bs.length].focus()}});
   let x0=null;lb.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
   lb.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)show(i+(dx<0?1:-1))});
 })();
