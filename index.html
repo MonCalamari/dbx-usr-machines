@@ -62,6 +62,13 @@ ul.notes li::marker{color:var(--acc)}
 .strip a{flex:0 0 auto;scroll-snap-align:start;line-height:0;border:1px solid var(--s2)}.strip a:hover,.strip a:focus-visible{border-color:#e13226}
 .strip img{height:210px;width:auto;display:block}
 .photos .small{margin:8px 0 0}.photos .small:last-of-type{margin-bottom:32px}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;flex-direction:column;padding:16px;line-height:1.4}
+.lb.open{display:flex}
+.lb img{max-width:min(96vw,1500px);max-height:76vh;object-fit:contain;border:1px solid var(--s2);cursor:pointer}
+.lb .cap{max-width:860px;margin:10px 0 0;font-size:13px;color:var(--s3);text-align:center;min-height:1.4em}
+.lb .bar{display:flex;gap:10px;align-items:center;margin-top:12px;font-size:13px;color:var(--s3)}
+.lb button{background:#000;color:var(--ink);border:1px solid var(--s2);padding:6px 16px;font:inherit;cursor:pointer}
+.lb button:hover,.lb button:focus-visible{border-color:#e13226;color:#e13226;outline:none}
 .small{font-size:13px;color:var(--s3)}
 .dl a{display:inline-block;border:1px solid var(--acc);padding:3px 12px;margin:0 6px 6px 0;text-decoration:none}
 .dl a:hover{background:var(--acc);color:#000}
@@ -118,7 +125,7 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 <a href="media/photos/canal-fog.jpg" target="_blank" rel="noopener"><img src="media/photos/canal-fog-t.jpg" width="650" height="420" alt="A canal lock in thick fog with lamps reflected in the water" loading="lazy"></a>
 <a href="media/photos/lamp-below.jpg" target="_blank" rel="noopener"><img src="media/photos/lamp-below-t.jpg" width="271" height="420" alt="A street lamp seen from directly below against a dark sky" loading="lazy"></a>
 </div>
-<p class="small">My own photos (mostly Nikon D3400 and Panasonic G81). Click for the full size.</p>
+<p class="small">My own photos (mostly Nikon D3400 and Panasonic G81). Click to enlarge, then browse with the arrow keys or by swiping.</p>
 <p class="small">Many of the speakers shown are self-built: the tops, the 12" kick horns and the Limmer cabinets (Limmer 308 in the woods, Limmer 215 in a club that no longer exists), with Martin Audio VSX below the horns.</p>
 </section>
 
@@ -389,6 +396,26 @@ document.querySelectorAll('.lcdbox').forEach(box=>{
   if(!('IntersectionObserver' in window)){els.forEach(e=>{e.classList.add('on');window._lcdStart&&window._lcdStart(e)});return}
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');window._lcdStart&&window._lcdStart(e.target);io.unobserve(e.target)}}),{rootMargin:'0px 0px -15% 0px'});
   els.forEach(e=>io.observe(e));
+})();
+
+// Fotogalerie: Klick vergrößert, Pfeile/Wischen blättern, Esc schließt
+(function(){
+  const links=[...document.querySelectorAll('.strip a')];if(!links.length)return;
+  const lb=document.createElement('div');lb.className='lb';lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','Photo viewer');
+  lb.innerHTML='<img alt=""><p class="cap"></p><div class="bar"><button type="button" data-a="prev" aria-label="Previous photo">&#9664;</button><span class="cnt"></span><button type="button" data-a="next" aria-label="Next photo">&#9654;</button><button type="button" data-a="close" aria-label="Close">&#10005; ESC</button></div>';
+  document.body.appendChild(lb);
+  const img=lb.querySelector('img'),cap=lb.querySelector('.cap'),cnt=lb.querySelector('.cnt'),n=links.length;
+  let i=0,last=null;
+  const show=k=>{i=(k+n)%n;const a=links[i],t=a.querySelector('img');img.src=a.href;img.alt=t.alt;cap.textContent=t.alt;cnt.textContent=String(i+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');[i+1,i-1].forEach(j=>{new Image().src=links[(j+n)%n].href})};
+  const open=k=>{last=document.activeElement;show(k);lb.classList.add('open');document.body.style.overflow='hidden';lb.querySelector('[data-a=close]').focus()};
+  const close=()=>{lb.classList.remove('open');document.body.style.overflow='';if(last&&last.focus)last.focus()};
+  links.forEach((a,k)=>a.addEventListener('click',e=>{if(e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();open(k)}));
+  lb.addEventListener('click',e=>{const b=e.target.closest('button');if(b){const x=b.dataset.a;if(x=='prev')show(i-1);else if(x=='next')show(i+1);else close()}else if(e.target===img)show(i+1);else if(e.target===lb)close()});
+  document.addEventListener('keydown',e=>{if(!lb.classList.contains('open'))return;
+    if(e.key=='Escape')close();else if(e.key=='ArrowRight')show(i+1);else if(e.key=='ArrowLeft')show(i-1);
+    else if(e.key=='Tab'){const bs=[...lb.querySelectorAll('button')],f=bs.indexOf(document.activeElement);e.preventDefault();bs[(f+(e.shiftKey?-1:1)+bs.length)%bs.length].focus()}});
+  let x0=null;lb.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});
+  lb.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)show(i+(dx<0?1:-1))});
 })();
 </script>
 </body>
