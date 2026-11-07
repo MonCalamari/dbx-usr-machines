@@ -40,8 +40,12 @@ a:hover{color:var(--acc)}
 h2{font-size:15px;letter-spacing:.2em;text-transform:uppercase;margin:0 0 12px;display:flex;gap:10px;align-items:center}
 h2::before{content:"";width:14px;height:14px;background:var(--acc)}
 h2::after{content:"";flex:1;border-top:2px dotted var(--s2)}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0 0}
 nav a{border:1px solid var(--s2);padding:4px 14px;text-decoration:none;font-size:14px}
+nav .navm{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+nav a.navmach{display:flex;align-items:center;gap:12px;background:#e13226;border-color:#e13226;color:#000;padding:6px 16px 6px 10px;font-size:16px;font-weight:700;letter-spacing:.08em}
+nav a.navmach:hover,nav a.navmach:focus-visible{background:#f2493d;border-color:#f2493d;outline:none}
+.navlogo{display:block;width:48px;height:36px;image-rendering:pixelated}
 nav a:hover{background:var(--acc);border-color:var(--acc);color:#000}
 .machines{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}@media(min-width:1000px){.machines{grid-template-columns:1fr 1fr;grid-template-rows:repeat(10,auto);column-gap:24px;row-gap:0}.machine{display:grid;grid-row:span 10;grid-template-rows:subgrid}.mbody{display:grid;grid-row:span 9;grid-template-rows:subgrid;align-content:start}.mbody>*{align-self:start}}.machine{border:1px solid var(--s2);margin:0;min-width:0}#about p,#install p,#notes p,#license p{max-width:860px}.mhead{flex-wrap:wrap;row-gap:2px}
 .mhead{display:flex;align-items:center;gap:16px;background:#a4a9ac;color:#000;padding:8px 14px}
@@ -121,7 +125,7 @@ ul.notes li::marker{color:var(--acc)}
   <p class="sub">FOR THE ELEKTRON MACHINEDRUM</p>
   <div class="ver"><span id="wname">SAW &gt; PULSE</span><span>MDX X.20 · MDS 1.1</span></div>
 </header>
-<nav><a href="#about">ABOUT</a><a href="#photos">FIELD NOTES</a><a href="#dbx-k2">DBX-K2</a><a href="#dbx-dr">DBX-DR</a><a href="#install">INSTALL</a><a href="#notes">THANKS</a></nav>
+<nav><a href="#about">ABOUT</a><a href="#photos">FIELD NOTES</a><a href="#install">INSTALL</a><a href="#notes">THANKS</a><span class="navm"><a class="navmach" href="#dbx-k2" aria-label="DBX-K2, resonator kick"><canvas class="navlogo" data-logo="k2" aria-hidden="true"></canvas><b>DBX-K2</b></a><a class="navmach" href="#dbx-dr" aria-label="DBX-DR, dark drone"><canvas class="navlogo" data-logo="dr" aria-hidden="true"></canvas><b>DBX-DR</b></a></span></nav>
 
 <hr class="dots">
 <section id="about">
@@ -357,6 +361,7 @@ document.querySelectorAll('canvas.lcd').forEach(cv=>{
 
 // ---- Boot-Sequenz nach der echten Machinedrum: Textbild, Logo-Anflug, dann die Machine ----
 // Die Kästen unten kommen aus DISP/LOGO: jede neue Machine mit Logo ist automatisch dabei.
+document.querySelectorAll('canvas.navlogo').forEach(c=>{const L=LOGO[c.dataset.logo];if(!L)return;const S=2;c.width=32*S;c.height=24*S;const x=c.getContext('2d');x.fillStyle='#1a0402';for(let i=0;i<768;i++)if(L[i]=='1')x.fillRect((i%32)*S,Math.floor(i/32)*S,S,S)});
 const BW=134,BH=66,BS=6,RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function mk(){const B=new Uint8Array(BW*BH);
   const px=(x,y,v=1)=>{x=Math.round(x);y=Math.round(y);if(x>=0&&x<BW&&y>=0&&y<BH)B[y*BW+x]=v};
