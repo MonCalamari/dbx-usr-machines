@@ -15,7 +15,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://moncalamari.github.io/dbx-usr-machines/media/dbx-usr-machines.png">
 <style>
-:root{--bg:#161614;--ink:#bcc0c2;--acc:#ec281e;--s1:#2a2c2d;--s2:#505456;--s3:#83878a}
+:root{--bg:#161614;--ink:#bcc0c2;--acc:#f52128;--s1:#2a2c2d;--s2:#505456;--s3:#83878a}
 *{box-sizing:border-box}
 body{margin:0;background:#000;color:var(--ink);font:16px/1.55 ui-monospace,"DejaVu Sans Mono",Menlo,Consolas,monospace}
 main{max-width:1240px;margin:0 auto;padding:16px 16px 48px}
@@ -30,9 +30,9 @@ a:hover{color:var(--acc)}
 .lcd{display:block;width:100%;max-width:100%;image-rendering:pixelated;opacity:0;transition:opacity .8s ease}.lcdbox.done .lcd{opacity:1}
 .ovl{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .8s ease;pointer-events:none}.lcdbox.done .ovl{opacity:1}
 .boot{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .6s ease;pointer-events:none}.lcdbox.bootshow .boot{opacity:1}.lcdbox.done .boot{opacity:0;transition:opacity .8s ease}
-@media(prefers-reduced-motion:reduce){.title,.lcdbox{animation:none;background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}.title canvas{animation:none;clip-path:none}.lcd,.ovl{opacity:1;transition:none}.boot{display:none}}
+@media(prefers-reduced-motion:reduce){.title,.lcdbox{animation:none;background:#f52128;box-shadow:0 0 28px rgba(245,33,40,.28)}.title canvas{animation:none;clip-path:none}.lcd,.ovl{opacity:1;transition:none}.boot{display:none}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-@keyframes glow{from{background:#000;box-shadow:0 0 0 rgba(225,50,38,0)}to{background:#e13226;box-shadow:0 0 28px rgba(225,50,38,.28)}}
+@keyframes glow{from{background:#000;box-shadow:0 0 0 rgba(245,33,40,0)}to{background:#f52128;box-shadow:0 0 28px rgba(245,33,40,.28)}}
 @keyframes slide{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 .sub{text-align:center;letter-spacing:.2em;font-size:13px;margin:10px 0 0}
 .ver{display:flex;justify-content:space-between;padding:0 8px;font-size:13px;color:var(--s3);margin-top:8px}
@@ -43,8 +43,8 @@ h2::after{content:"";flex:1;border-top:2px dotted var(--s2)}
 nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0 0}
 nav a{border:1px solid var(--s2);padding:4px 14px;text-decoration:none;font-size:14px}
 nav .navm{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
-nav a.navmach{display:flex;align-items:center;gap:12px;background:#e13226;border-color:#e13226;color:#000;padding:6px 16px 6px 10px;font-size:16px;font-weight:700;letter-spacing:.08em}
-nav a.navmach:hover,nav a.navmach:focus-visible{background:#f2493d;border-color:#f2493d;outline:none}
+nav a.navmach{display:flex;align-items:center;gap:12px;background:#f52128;border-color:#f52128;color:#000;padding:6px 16px 6px 10px;font-size:16px;font-weight:700;letter-spacing:.08em}
+nav a.navmach:hover,nav a.navmach:focus-visible{background:#ff4a50;border-color:#ff4a50;outline:none}
 .navlogo{display:block;width:48px;height:36px;image-rendering:pixelated}
 nav a:hover{background:var(--acc);border-color:var(--acc);color:#000}
 .machines{display:grid;grid-template-columns:1fr;gap:24px;align-items:start}@media(min-width:1000px){.machines{grid-template-columns:1fr 1fr;grid-template-rows:repeat(10,auto);column-gap:24px;row-gap:0}.machine{display:grid;grid-row:span 10;grid-template-rows:subgrid}.mbody{display:grid;grid-row:span 9;grid-template-rows:subgrid;align-content:start}.mbody>*{align-self:start}}.machine{border:1px solid var(--s2);margin:0;min-width:0}#about p,#install p,#notes p,#license p{max-width:860px}.mhead{flex-wrap:wrap;row-gap:2px}
@@ -62,19 +62,19 @@ td:nth-child(2){white-space:nowrap;color:var(--s3)}
 audio{width:100%;filter:invert(.9) hue-rotate(180deg)}
 ul.notes{padding-left:18px;margin:6px 0}
 ul.notes li::marker{color:var(--acc)}
-.heads{border-left:6px solid #e13226;background:#0d0d0d;padding:10px 14px;margin:0 0 16px;font-size:14px}.heads b.h{display:block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}.strip{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:10px;scrollbar-color:#505456 #000;scrollbar-width:thin}
-.strip a{flex:0 0 auto;scroll-snap-align:start;line-height:0;border:1px solid var(--s2)}.strip a:hover,.strip a:focus-visible{border-color:#e13226}
+.heads{border-left:6px solid #f52128;background:#0d0d0d;padding:10px 14px;margin:0 0 16px;font-size:14px}.heads b.h{display:block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}.strip{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:10px;scrollbar-color:#505456 #000;scrollbar-width:thin}
+.strip a{flex:0 0 auto;scroll-snap-align:start;line-height:0;border:1px solid var(--s2)}.strip a:hover,.strip a:focus-visible{border-color:#f52128}
 .strip img{height:210px;width:auto;display:block}
 .photos .small{margin:8px 0 0}.photos .small:last-of-type{margin-bottom:28px}
 .btb{margin:0 0 24px}
 .phead{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:0 0 12px}.phead h2{flex:1;margin:0}
 .strip a{position:relative}.strip .px{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;display:none}
 .lbimg{position:relative;line-height:0}.lbpx{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;display:none}
-.lfo{display:block;width:72px;height:66px;cursor:ns-resize;touch-action:none;border:1px solid var(--s2);background:#e13226;image-rendering:pixelated}.lfo:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-@keyframes hint{0%,100%{transform:scale(1);filter:brightness(.92);box-shadow:0 0 0 1px rgba(225,50,38,.25),0 0 0 0 rgba(225,50,38,0)}50%{transform:scale(1.03);filter:brightness(1.12);box-shadow:0 0 0 1px rgba(225,50,38,.85),0 0 10px 2px rgba(225,50,38,.5)}}
-@keyframes hint2{0%,100%{filter:brightness(.97);box-shadow:0 0 0 1px rgba(225,50,38,.15),0 0 0 0 rgba(225,50,38,0)}50%{filter:brightness(1.06);box-shadow:0 0 0 1px rgba(225,50,38,.4),0 0 6px 0 rgba(225,50,38,.25)}}
+.lfo{display:block;width:72px;height:66px;cursor:ns-resize;touch-action:none;border:1px solid var(--s2);background:#f52128;image-rendering:pixelated}.lfo:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@keyframes hint{0%,100%{transform:scale(1);filter:brightness(.92);box-shadow:0 0 0 1px rgba(245,33,40,.25),0 0 0 0 rgba(245,33,40,0)}50%{transform:scale(1.03);filter:brightness(1.12);box-shadow:0 0 0 1px rgba(245,33,40,.85),0 0 10px 2px rgba(245,33,40,.5)}}
+@keyframes hint2{0%,100%{filter:brightness(.97);box-shadow:0 0 0 1px rgba(245,33,40,.15),0 0 0 0 rgba(245,33,40,0)}50%{filter:brightness(1.06);box-shadow:0 0 0 1px rgba(245,33,40,.4),0 0 6px 0 rgba(245,33,40,.25)}}
 .lfo{animation:hint 2.4s ease-in-out infinite}.lfo.used{animation:hint2 3.4s ease-in-out infinite}
-@media(prefers-reduced-motion:reduce){.lfo{animation:none;box-shadow:0 0 0 2px #e13226,0 0 12px 2px rgba(225,50,38,.5)}.lfo.used{box-shadow:0 0 0 1px rgba(225,50,38,.3)}}
+@media(prefers-reduced-motion:reduce){.lfo{animation:none;box-shadow:0 0 0 2px #f52128,0 0 12px 2px rgba(245,33,40,.5)}.lfo.used{box-shadow:0 0 0 1px rgba(245,33,40,.3)}}
 .dl.printrow{margin-bottom:0}
 .dl .printbtn{display:inline-block;background:none;color:var(--ink);font:inherit;border:1px solid var(--acc);padding:3px 12px;margin:0 6px 6px 0;cursor:pointer}.dl .printbtn:hover,.dl .printbtn:focus-visible{background:var(--acc);color:#000;outline:none}
 @media print{
@@ -109,13 +109,13 @@ ul.notes li::marker{color:var(--acc)}
 .lb .lfo{width:48px;height:44px;margin-right:6px}
 .lb .lbnav{position:absolute;left:0;right:0;bottom:18px;display:flex;gap:10px;align-items:center;justify-content:center;font-size:13px;color:var(--s3)}
 .lb button{background:#000;color:var(--ink);border:1px solid var(--s2);padding:6px 16px;font:inherit;cursor:pointer}
-.lb button:hover,.lb button:focus-visible{border-color:#e13226;color:#e13226;outline:none}
+.lb button:hover,.lb button:focus-visible{border-color:#f52128;color:#f52128;outline:none}
 .small{font-size:13px;color:var(--s3)}
 .dl a{display:inline-block;border:1px solid var(--acc);padding:3px 12px;margin:0 6px 6px 0;text-decoration:none}
 .dl a:hover{background:var(--acc);color:#000}
 .bar{height:4px;background:var(--ink);margin:0 8px;border-top:0}
 </style>
-<noscript><style>.lcd,.ovl{opacity:1}.lcdbox,.title{background:#e13226}</style></noscript>
+<noscript><style>.lcd,.ovl{opacity:1}.lcdbox,.title{background:#f52128}</style></noscript>
 </head>
 <body>
 <main>
