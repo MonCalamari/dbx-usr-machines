@@ -58,7 +58,11 @@ td:nth-child(2){white-space:nowrap;color:var(--s3)}
 audio{width:100%;filter:invert(.9) hue-rotate(180deg)}
 ul.notes{padding-left:18px;margin:6px 0}
 ul.notes li::marker{color:var(--acc)}
-.heads{border-left:6px solid #e13226;background:#0d0d0d;padding:10px 14px;margin:0 0 16px;font-size:14px}.heads b.h{display:block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}.small{font-size:13px;color:var(--s3)}
+.heads{border-left:6px solid #e13226;background:#0d0d0d;padding:10px 14px;margin:0 0 16px;font-size:14px}.heads b.h{display:block;font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}.strip{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:10px;scrollbar-color:#505456 #000;scrollbar-width:thin}
+.strip a{flex:0 0 auto;scroll-snap-align:start;line-height:0;border:1px solid var(--s2)}.strip a:hover,.strip a:focus-visible{border-color:#e13226}
+.strip img{height:210px;width:auto;display:block}
+.photos .small{margin:8px 0 32px}
+.small{font-size:13px;color:var(--s3)}
 .dl a{display:inline-block;border:1px solid var(--acc);padding:3px 12px;margin:0 6px 6px 0;text-decoration:none}
 .dl a:hover{background:var(--acc);color:#000}
 .bar{height:4px;background:var(--ink);margin:0 8px;border-top:0}
@@ -86,6 +90,26 @@ in principle, not copied. Made for EBM, industrial and dark techno: <b>raw, pres
 </section>
 
 <hr class="dots">
+<section class="photos" id="photos">
+<h2>Field notes</h2>
+<div class="strip">
+<a href="media/photos/signal-kommt.jpg" target="_blank" rel="noopener"><img src="media/photos/signal-kommt-t.jpg" width="274" height="420" alt="Red glowing sign reading &quot;Signal kommt&quot; behind condensation" loading="lazy"></a>
+<a href="media/photos/red-wall-triangles.jpg" target="_blank" rel="noopener"><img src="media/photos/red-wall-triangles-t.jpg" width="564" height="420" alt="Three white paper triangles hanging in front of a decayed red wall" loading="lazy"></a>
+<a href="media/photos/corridor.jpg" target="_blank" rel="noopener"><img src="media/photos/corridor-t.jpg" width="313" height="420" alt="A narrow empty corridor with ceiling lamps, fading into darkness" loading="lazy"></a>
+<a href="media/photos/bucket.jpg" target="_blank" rel="noopener"><img src="media/photos/bucket-t.jpg" width="623" height="420" alt="A rusty bucket filled with black liquid next to a concrete pipe" loading="lazy"></a>
+<a href="media/photos/stairs.jpg" target="_blank" rel="noopener"><img src="media/photos/stairs-t.jpg" width="319" height="420" alt="A terrazzo staircase seen from above" loading="lazy"></a>
+<a href="media/photos/frozen-leaves.jpg" target="_blank" rel="noopener"><img src="media/photos/frozen-leaves-t.jpg" width="555" height="420" alt="Collapsed giant leaves in a winter garden, black and white" loading="lazy"></a>
+<a href="media/photos/steel-plates.jpg" target="_blank" rel="noopener"><img src="media/photos/steel-plates-t.jpg" width="304" height="420" alt="Dark welded steel plates meeting at angles" loading="lazy"></a>
+<a href="media/photos/dark-room.jpg" target="_blank" rel="noopener"><img src="media/photos/dark-room-t.jpg" width="559" height="420" alt="A dark concrete room seen through a broken wall opening" loading="lazy"></a>
+<a href="media/photos/spider.jpg" target="_blank" rel="noopener"><img src="media/photos/spider-t.jpg" width="559" height="420" alt="A spider in its web in front of a bright strip of light" loading="lazy"></a>
+<a href="media/photos/door.jpg" target="_blank" rel="noopener"><img src="media/photos/door-t.jpg" width="311" height="420" alt="A dark doorway with graffiti and stickers on the frame" loading="lazy"></a>
+<a href="media/photos/ivy-wall.jpg" target="_blank" rel="noopener"><img src="media/photos/ivy-wall-t.jpg" width="232" height="420" alt="A crumbling stone gatepost overgrown with ivy at night" loading="lazy"></a>
+<a href="media/photos/cobbles.jpg" target="_blank" rel="noopener"><img src="media/photos/cobbles-t.jpg" width="232" height="420" alt="Foggy cobblestone road with street lamps" loading="lazy"></a>
+<a href="media/photos/purple-green.jpg" target="_blank" rel="noopener"><img src="media/photos/purple-green-t.jpg" width="385" height="420" alt="Backyard at night lit in purple and green" loading="lazy"></a>
+</div>
+<p class="small">My own photos (Nikon D3400, Panasonic G81). Click for the full size.</p>
+</section>
+
 <div class="machines">
 <section class="machine" id="dbx-k2" data-machine="kick2" data-version="0.9" data-mk1="2850" data-mk2="2508" data-kb="1.8">
   <div class="mhead"><h3>DBX-K2</h3><span>Resonator kick · v0.9 · MKII 2,508 / MKI 2,850 cycles · 1.8 KB</span></div>
@@ -192,7 +216,7 @@ sounds on this page started there. I owe you a big thank you, and greetings!</li
 No warranty – back up your Machinedrum before installing anything, and start with sensible levels:
 these machines can get loud. In my own tests they stayed controlled, but I tested on one MKII +Drive UW only and have not tried every
 combination of all eight knobs on either machine. jmamma's specification and tools keep their own licenses; the Machinedrum and
-MDX names belong to their respective owners. This is an unofficial community project, not affiliated with Elektron.</p>
+MDX names belong to their respective owners. The photos are my own, © MonCalamari, and are not covered by the GPL. This is an unofficial community project, not affiliated with Elektron.</p>
 </section>
 <div class="bar"></div>
 </main>
